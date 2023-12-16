@@ -13,5 +13,9 @@ UCLASS()
 class TPSGAME_API UPlayerAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
-	
+
+
+public:
+	UPROPERTY(BlueprintReadWrite)
+	FRotator NewRotator;
 };

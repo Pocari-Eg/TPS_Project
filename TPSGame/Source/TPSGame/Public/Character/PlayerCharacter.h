@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "TPSGame.h"
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
@@ -12,16 +12,14 @@ class TPSGAME_API APlayerCharacter : public ACharacter
 	GENERATED_BODY()
 
 private:
-
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* FollowCamera;
+protected:
 
-
-
-
+	class UPlayerAnimInstance* PlayerAnim;
+	
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
@@ -43,4 +41,16 @@ public:
 	// Handles input for moving right and left.
 	UFUNCTION()
 		void MoveRight(float value);
+
+	UFUNCTION()
+	void Trun(float value);
+	UFUNCTION()
+	void LookUp(float value);
+
+
+public:
+	//debug
+	UPROPERTY(EditAnywhere)
+	float CameraSpeed;
+	
 };
