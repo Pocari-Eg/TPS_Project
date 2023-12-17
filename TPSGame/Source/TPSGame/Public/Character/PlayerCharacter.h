@@ -4,22 +4,42 @@
 
 #include "TPSGame.h"
 #include "GameFramework/Character.h"
-#include "PlayerCharacter.generated.h"
 
+
+#include "Curves/CurveFloat.h"
+#include "Components/TimeLineComponent.h"
+
+#include "PlayerCharacter.generated.h"
 UCLASS()
 class TPSGAME_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	//components
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* FollowCamera;
-protected:
 
+
+	//TimeLine
+	// Rotation
+    UPROPERTY()
+	float PrevRotation;
+	float Sign;
+	UPROPERTY()
+	UCurveFloat* RotationCurve;
+	UPROPERTY()
+	UTimelineComponent* RotationTimeLine;
+	UPROPERTY()
+	FOnTimelineFloat RotationCallBack;
+	UPROPERTY()
+	FOnTimelineEvent RotationFinishCallback;
+protected:
 	class UPlayerAnimInstance* PlayerAnim;
-	
+
+#pragma region Function	
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
@@ -35,22 +55,38 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// Handles input for moving forward and backward.
-	UFUNCTION()
-		void MoveForward(float value);
 
-	// Handles input for moving right and left.
-	UFUNCTION()
-		void MoveRight(float value);
+private:
 
+	//player move
+	UFUNCTION()
+	void MoveForward(float value);
+	UFUNCTION()
+	void MoveRight(float value);
+
+
+	//player rotation
 	UFUNCTION()
 	void Trun(float value);
 	UFUNCTION()
 	void LookUp(float value);
+	UFUNCTION()
+	void HeadFollowing();
 
-
+	UFUNCTION()
+	void Rotating(float Value);
+	UFUNCTION()
+	void FinishRotation();
+UFUNCTION()
+	void InitRotatingCurve();
+	
 public:
 	//debug
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,Category="DEBUG")
 	float CameraSpeed;
-	
+	UPROPERTY(EditAnywhere,Category="DEBUG")
+	bool bIsDebug=true;
+	UPROPERTY(EditAnywhere,Category="DEBUG")
+	 float LimitAngle=90.0f;
+#pragma endregion Function
 };

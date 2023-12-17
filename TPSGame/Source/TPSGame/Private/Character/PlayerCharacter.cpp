@@ -10,6 +10,8 @@
 #include "GameFramework/SpringArmComponent.h"
 
 #include "Character/PlayerAnimInstance.h"
+#include "Math.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -67,7 +69,15 @@ APlayerCharacter::APlayerCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->RotationRate=FRotator(0.f,360.f,0.f);
 
-	
+	//curve
+    	const ConstructorHelpers::FObjectFinder<UCurveFloat>RotationCurveData(TEXT("/Script/Engine.CurveFloat'/Game/data/RotatingCurve.RotatingCurve'"));
+    	if (RotationCurveData.Succeeded())
+    	{
+    		RotationCurve = RotationCurveData.Object;
+     
+    	}
+    
+    	RotationTimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("RotationTimeLine"));
 	
 }
 
@@ -78,13 +88,14 @@ void APlayerCharacter::BeginPlay()
 
 
 	PlayerAnim=Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+	InitRotatingCurve();
 }
 
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	HeadFollowing();
 }
 
 // Called to bind functionality to input
@@ -115,42 +126,88 @@ void APlayerCharacter::Trun(float value)
 	float time=GetWorld()->DeltaTimeSeconds;
 	float m_value=value*CameraSpeed*time;
 	AddControllerYawInput(m_value);
-
-
-	//플레이어의 벡터와 카메라의 벡터의 내적을 통해 사이 각을 구한다.
-	FVector PlayerV=GetActorForwardVector();
-	FVector CameraV=FollowCamera->GetForwardVector();
-
-	PlayerV.Normalize();
-	CameraV.Normalize();
-
-   float dot=  FVector::DotProduct(PlayerV,CameraV);
-
-	float Degree = UKismetMathLibrary::DegAcos(dot);
-	TLOG_E(TEXT("%f"),Degree);
-
-	//외적을 통해 플레이어 벡터를 중심으로 카메라가 왼쪽을 향하면 -, 오른쪽을 향하면 +를 부호로 설정해 각도 변환
-	FVector OutProduct = FVector::CrossProduct(PlayerV, CameraV);
-	float Sign = UKismetMathLibrary::SignOfFloat(OutProduct.Z);
-
-
-	//한변에 하체 및 플레이어의 방향을 회전
-	if(Degree>90.0f)
-	{
-		AddActorWorldRotation(FRotator(0.0f,Degree*Sign,0.0f));
-	}
-	
-	PlayerAnim->NewRotator=FRotator(0.0f,Degree*Sign,0.0f);
 }
 
 void APlayerCharacter::LookUp(float value)
 {
 	float time=GetWorld()->DeltaTimeSeconds;
 	float m_value=value*CameraSpeed*time;
-	
 	AddControllerPitchInput(m_value);
+}
 
+void APlayerCharacter::HeadFollowing()
+{
 
+	//대상 전면 벡터
+	FVector CameraV=FollowCamera->GetForwardVector();
+	FVector PlayerV =GetActorForwardVector();
+	
+	PlayerV.Normalize();
+	CameraV.Normalize();
 
+	//벡터를 가지고 qutarnion 구하기
+	FQuat Rot=Math::VectorA2BRotation(PlayerV,CameraV);
+
+	if(bIsDebug)
+	{
+		FVector RotateVec = Rot.RotateVector(PlayerV);
+
+		UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (PlayerV * 100), 300.0f, FLinearColor::Blue, 0.1f, 3.0f);
+		UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (CameraV * 100), 300.0f, FLinearColor::Red, 0.1f, 3.0f);
+	}
+
+	//머리 회전 값 전달
+	PlayerAnim->NewRotator=Rot.Rotator();
+    
+
+	//벡터 값을 가지고 
+	FVector  Temp=CameraV;
+	Temp.Z=0.0f;
+	float dot=  FVector::DotProduct(PlayerV,Temp);
+	float Degree = UKismetMathLibrary::DegAcos(dot);
+	TLOG_E(TEXT("%f"),Degree);
+	
+
+	//외적을 통해 플레이어 벡터를 중심으로 카메라가 왼쪽을 향하면 -, 오른쪽을 향하면 +를 부호로 설정해 각도 변환
+	FVector OutProduct = FVector::CrossProduct(PlayerV, Temp);
+	 Sign = UKismetMathLibrary::SignOfFloat(OutProduct.Z);
+
+	//한변에 하체 및 플레이어의 방향을 회전
+	if(Degree>=LimitAngle)
+	{
+		//AddActorWorldRotation(FRotator(0.0f,Degree*Sign,0.0f));
+		PrevRotation=0.0f;
+		
+		RotationTimeLine->PlayFromStart();
+	}
+}
+
+void APlayerCharacter::Rotating(float Value)
+{
+	float TimeLineValue = Value;
+	float NewRotationValue = (LimitAngle* TimeLineValue) - PrevRotation;
+	PrevRotation += NewRotationValue;
+	NewRotationValue*=Sign;
+	AddActorWorldRotation(FRotator(0.0f, NewRotationValue, 0.0f));
+}
+
+void APlayerCharacter::FinishRotation()
+{
+	PrevRotation = 0.0f;
+}
+
+void APlayerCharacter::InitRotatingCurve()
+{
+
+	RotationCallBack.BindUFunction(this, FName("Rotating"));
+	RotationFinishCallback.BindUFunction(this, FName("FinishRotation"));
+
+	RotationTimeLine->SetTimelineFinishedFunc(RotationFinishCallback);
+	RotationTimeLine->AddInterpFloat(RotationCurve, RotationCallBack);
+	
+	float Min = 0.0f;
+	float Max = 0.0f;
+	RotationCurve->GetTimeRange(Min, Max);
+	RotationTimeLine->SetTimelineLength(Max);
 }
 
