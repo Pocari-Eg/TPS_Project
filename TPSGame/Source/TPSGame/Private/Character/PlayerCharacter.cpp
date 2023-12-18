@@ -95,7 +95,9 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 	HeadFollowing();
+   if(PlayerAnim->GetbIsWalk())CameraFollowPlayer();
 }
 
 // Called to bind functionality to input
@@ -110,13 +112,14 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::MoveForward(float value)
 {
-	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	FVector Direction = GetActorForwardVector();
 	AddMovementInput(Direction, value);
 }
 
 void APlayerCharacter::MoveRight(float value)
 {
-	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+	FVector FowardVector = GetActorForwardVector();
+	FVector Direction=FowardVector.RotateAngleAxis(90.0f,FVector::UpVector);
 	AddMovementInput(Direction, value);
 }
 
@@ -144,42 +147,68 @@ void APlayerCharacter::HeadFollowing()
 	
 	PlayerV.Normalize();
 	CameraV.Normalize();
-
-	//벡터를 가지고 qutarnion 구하기
-	FQuat Rot=Math::VectorA2BRotation(PlayerV,CameraV);
-
-	if(bIsDebug)
+	FQuat Rot;
+	if(!PlayerAnim->GetbIsWalk())
 	{
-		FVector RotateVec = Rot.RotateVector(PlayerV);
+		//벡터를 가지고 qutarnion 구하기
+		 Rot=Math::VectorA2BRotation(PlayerV,CameraV);
 
-		UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (PlayerV * 100), 300.0f, FLinearColor::Blue, 0.1f, 3.0f);
-		UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (CameraV * 100), 300.0f, FLinearColor::Red, 0.1f, 3.0f);
+		if(bIsDebug)
+		{
+			FVector RotateVec = Rot.RotateVector(PlayerV);
+
+			UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (PlayerV * 100), 300.0f, FLinearColor::Blue, 0.1f, 3.0f);
+			UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (CameraV * 100), 300.0f, FLinearColor::Red, 0.1f, 3.0f);
+		}
 	}
-
 	//머리 회전 값 전달
-	PlayerAnim->NewRotator=Rot.Rotator();
-    
-
-	//벡터 값을 가지고 
-	FVector  Temp=CameraV;
-	Temp.Z=0.0f;
-	float dot=  FVector::DotProduct(PlayerV,Temp);
-	float Degree = UKismetMathLibrary::DegAcos(dot);
-	TLOG_E(TEXT("%f"),Degree);
+	PlayerAnim->SetHeadRotator(Rot.Rotator());
 	
-
-	//외적을 통해 플레이어 벡터를 중심으로 카메라가 왼쪽을 향하면 -, 오른쪽을 향하면 +를 부호로 설정해 각도 변환
-	FVector OutProduct = FVector::CrossProduct(PlayerV, Temp);
-	 Sign = UKismetMathLibrary::SignOfFloat(OutProduct.Z);
-
+	float Degree =CalcDegree(PlayerV,CameraV);
 	//한변에 하체 및 플레이어의 방향을 회전
 	if(Degree>=LimitAngle)
 	{
-		//AddActorWorldRotation(FRotator(0.0f,Degree*Sign,0.0f));
 		PrevRotation=0.0f;
-		
 		RotationTimeLine->PlayFromStart();
 	}
+}
+
+void APlayerCharacter::CameraFollowPlayer()
+{
+	FVector CameraV=FollowCamera->GetForwardVector();
+	FVector PlayerV =GetActorForwardVector();
+	
+
+
+	PlayerV.Z=0.0f;
+	CameraV.Z=0.0f;
+		
+	PlayerV.Normalize();
+	CameraV.Normalize();
+		
+	FQuat RotationQuat = Math::VectorA2BRotation(PlayerV, CameraV);
+	
+
+
+	AddActorWorldRotation(RotationQuat);
+}
+
+float APlayerCharacter::CalcDegree(FVector PlayerTemp, FVector CameraTemp)
+{	
+	
+	CameraTemp.Z=0.0f;
+	PlayerTemp.Z=0.0f;
+
+	CameraTemp.Normalize();
+	PlayerTemp.Normalize();
+	
+	float dot=  FVector::DotProduct(CameraTemp,PlayerTemp);
+	float degree= UKismetMathLibrary::DegAcos(dot);
+	//외적을 통해 플레이어 벡터를 중심으로 카메라가 왼쪽을 향하면 -, 오른쪽을 향하면 +를 부호로 설정해 각도 변환
+	FVector OutProduct = FVector::CrossProduct(PlayerTemp, CameraTemp);
+	Sign = UKismetMathLibrary::SignOfFloat(OutProduct.Z);
+	
+	return degree;
 }
 
 void APlayerCharacter::Rotating(float Value)

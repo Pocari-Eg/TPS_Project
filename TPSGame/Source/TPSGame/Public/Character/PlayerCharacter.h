@@ -72,11 +72,16 @@ private:
 	void LookUp(float value);
 	UFUNCTION()
 	void HeadFollowing();
+    UFUNCTION()
+	void CameraFollowPlayer();
 
+	UFUNCTION()
+	float CalcDegree(FVector PlayerTemp,FVector CameraTemp);
 	UFUNCTION()
 	void Rotating(float Value);
 	UFUNCTION()
 	void FinishRotation();
+	
 UFUNCTION()
 	void InitRotatingCurve();
 	
@@ -88,5 +93,6 @@ public:
 	bool bIsDebug=true;
 	UPROPERTY(EditAnywhere,Category="DEBUG")
 	 float LimitAngle=90.0f;
+
 #pragma endregion Function
 };

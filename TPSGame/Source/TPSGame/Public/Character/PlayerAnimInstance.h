@@ -13,9 +13,19 @@ UCLASS()
 class TPSGAME_API UPlayerAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
-
-
 public:
+	UPROPERTY(BlueprintReadOnly)
+	FRotator HeadRotater;
+
 	UPROPERTY(BlueprintReadWrite)
-	FRotator NewRotator;
+	bool bIsWalk;
+	
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetHeadRotator(FRotator value){HeadRotater=value;}
+	UFUNCTION(BlueprintCallable)
+	FRotator GetHeadRotator(){return HeadRotater;}
+
+	UFUNCTION()
+	bool GetbIsWalk(){return bIsWalk;}
 };
