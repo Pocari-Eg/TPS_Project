@@ -7,7 +7,7 @@
 
 
 #include "Curves/CurveFloat.h"
-#include "Components/TimeLineComponent.h"
+#include "Components/TimelineComponent.h"
 
 #include "PlayerCharacter.generated.h"
 UCLASS()
