@@ -6,7 +6,10 @@
 .vs/
 
 #ThirdParty
+
 ThridParty/*
+
+*/ThirdParty
 
 # Compiled Object files
 *.slo
