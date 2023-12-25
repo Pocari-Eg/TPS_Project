@@ -5,6 +5,9 @@
 # Visual Studio 2015 user specific files
 .vs/
 
+#ThirdParty
+ThridParty/*
+
 # Compiled Object files
 *.slo
 *.lo
