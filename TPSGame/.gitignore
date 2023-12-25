@@ -5,10 +5,6 @@
 # Visual Studio 2015 user specific files
 .vs/
 
-#ThirdParty
-
-ThridParty/Boost/*
-*/ThirdParty
 
 # Compiled Object files
 *.slo
@@ -57,6 +53,7 @@ SourceArt/**/*.tga
 # Binary Files
 Binaries/*
 Plugins/*/Binaries/*
+ThirdParty/*
 
 # Builds
 Build/*
