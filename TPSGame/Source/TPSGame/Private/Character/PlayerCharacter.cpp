@@ -13,6 +13,11 @@
 #include "Math.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+
+
+
+
+
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
@@ -98,6 +103,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	HeadFollowing();
    if(PlayerAnim->GetbIsWalk())CameraFollowPlayer();
+
+
+
+
 }
 
 // Called to bind functionality to input
@@ -238,5 +247,32 @@ void APlayerCharacter::InitRotatingCurve()
 	float Max = 0.0f;
 	RotationCurve->GetTimeRange(Min, Max);
 	RotationTimeLine->SetTimelineLength(Max);
+}
+
+
+
+void APlayerCharacter::NetworkTest()
+{
+	try {
+
+
+		// 서버에 연결
+		ip::tcp::socket socket(io_context);
+		socket.connect(ip::tcp::endpoint(ip::address::from_string("34.64.125.122"), 7777));
+
+			// 사용자로부터 입력 받음
+		std::string input = "Hello im Unreal";
+
+			// 서버로 데이터 전송
+			write(socket, buffer(input));
+
+			// 서버에서 응답 받음
+			std::vector<char> response(1024); // std::array 대신 std::vector 사용
+			size_t bytesRead = socket.read_some(buffer(response));
+	}
+	catch (std::exception& e) {
+		std::cerr << e.what() << std::endl;
+	}
+
 }
 
