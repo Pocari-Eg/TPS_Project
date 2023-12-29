@@ -7,15 +7,6 @@
 #include "Curves/CurveFloat.h"
 #include "Components/TimelineComponent.h"
 
-#pragma warning(disable:4005)
-THIRD_PARTY_INCLUDES_START
-#include <Boost/boost-1_80_0/include/boost/asio.hpp>
-THIRD_PARTY_INCLUDES_END
-
-
-#include <iostream>
-
-using namespace boost::asio;
 
 #include "PlayerCharacter.generated.h"
 UCLASS()
@@ -103,9 +94,6 @@ public:
 	 float LimitAngle=90.0f;
 
 
-	class io_context io_context;
-	UFUNCTION(Blueprintcallable)
-	void NetworkTest();
 
 #pragma endregion Function
 };
