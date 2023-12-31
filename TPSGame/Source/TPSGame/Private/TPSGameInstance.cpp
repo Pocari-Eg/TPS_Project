@@ -2,9 +2,10 @@
 
 
 #include "TPSGameInstance.h"
-#include "Network/NetworkInstance.h"
+#include "Network/LoginManager.h"
 void UTPSGameInstance::MysqlTest()
 {
-	NetworkInstance::Test();
-	
+
+	LoginManager* m_login=new LoginManager();
+	m_login->Test();
 }
