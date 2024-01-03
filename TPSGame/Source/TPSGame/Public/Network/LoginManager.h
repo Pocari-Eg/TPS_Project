@@ -5,7 +5,8 @@
 #include "TPSGame.h"
 #include <vector>
 
-struct RegiStruct;
+#include "NetwrokBase.h"
+
 struct LoginStruct;
 
 
@@ -15,18 +16,42 @@ public:
 	LoginManager();
 	~LoginManager();
 
-	bool Login(FText id,FText pwd);
-	bool Register(FText id,FText pwd,FText name);
+	  FString Login(FText id,FText pwd);
+	  FString Join(FText id,FText pwd,FText name);
 
-	 void Test();
 private:
 
 
-	//직렬화
-	std::vector<char> Login_serialize(const LoginStruct& data);
-	//역직렬화
-	LoginStruct Login_deserialize(const std::vector<char>& buffer);
-	
-	std::vector<char> Regi_serialize(const RegiStruct& data);
-	RegiStruct Regi_deserialize(const std::vector<char>& buffer);
+	std::vector<char>serialize(const LoginStruct& data);
+	LoginStruct deserialize(const std::vector<char>& buffer);
+
+
+template<size_t arraySize>
+ std::array<char, arraySize> ConvertArrayChar( FText Original)
+	{
+
+		std::array<char, arraySize> resultArray;
+		resultArray.fill('\0');
+		FString myFString = Original.ToString();
+
+		// FString�� std::string���� ��ȯ
+		std::string myStdString(TCHAR_TO_UTF8(*myFString));
+    
+		std::copy(myStdString.begin(), myStdString.end(), resultArray.begin());
+
+		return resultArray;
+
+	}
+	template<size_t arraySize>
+	std::array<char, arraySize> ConvertArrayChar( FString Original)
+	{
+		std::array<char, arraySize> resultArray;
+		resultArray.fill('\0');
+		std::string myStdString(TCHAR_TO_UTF8(*Original));
+
+		std::copy(myStdString.begin(), myStdString.end(), resultArray.begin());
+
+		return resultArray;
+	}
+
 };

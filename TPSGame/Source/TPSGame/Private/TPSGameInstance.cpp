@@ -6,6 +6,4 @@
 void UTPSGameInstance::MysqlTest()
 {
 
-	LoginManager* m_login=new LoginManager();
-	m_login->Test();
 }
