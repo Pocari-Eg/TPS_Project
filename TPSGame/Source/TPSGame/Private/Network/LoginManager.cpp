@@ -2,7 +2,7 @@
 
 
 #include "Network/LoginManager.h"
-#include "Network/NetwrokBase.h"
+#include "Network/NetworkBase.h"
 
 LoginManager::LoginManager()
 {
@@ -18,8 +18,8 @@ FString LoginManager::Login(FText id, FText pwd)
         io_context io_context;
 
         ip::tcp::socket socket(io_context);
-        socket.connect(ip::tcp::endpoint(ip::address::from_string("34.64.125.122"), 8888));
-       // socket.connect(ip::tcp::endpoint(ip::address::from_string("127.0.0.1"), 8888));
+        socket.connect(ip::tcp::endpoint(ip::address::from_string(SERVER_IP), DB_PORT));
+      // socket.connect(ip::tcp::endpoint(ip::address::from_string(LOCALHOST_IP), DB_PORT));
         TLOG_W(TEXT("Conncet DB SERVER"));
 
 
@@ -59,8 +59,8 @@ FString LoginManager::Join(FText id, FText pwd, FText name)
          io_context io_context;
                    
         ip::tcp::socket socket(io_context);
-         socket.connect(ip::tcp::endpoint(ip::address::from_string("34.64.125.122"), 8888));
-         // socket.connect(ip::tcp::endpoint(ip::address::from_string("127.0.0.1"), 8888));
+        socket.connect(ip::tcp::endpoint(ip::address::from_string(SERVER_IP), DB_PORT));
+    // socket.connect(ip::tcp::endpoint(ip::address::from_string(LOCALHOST_IP), DB_PORT));
            TLOG_W(TEXT("Conncet DB SERVER"));
                    
 

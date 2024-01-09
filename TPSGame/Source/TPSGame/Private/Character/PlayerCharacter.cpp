@@ -14,6 +14,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
+#include "Network/ClientThread.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -80,17 +81,21 @@ APlayerCharacter::APlayerCharacter()
     	}
     
     	RotationTimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("RotationTimeLine"));
+
 	
+	client = new ClientThread();
 }
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-
 	PlayerAnim=Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 	InitRotatingCurve();
+
+	
+	 client->StartThreads();
+	
 }
 
 // Called every frame

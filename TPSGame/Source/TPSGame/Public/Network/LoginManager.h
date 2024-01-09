@@ -5,7 +5,7 @@
 #include "TPSGame.h"
 #include <vector>
 
-#include "NetwrokBase.h"
+#include "NetworkBase.h"
 
 struct LoginStruct;
 

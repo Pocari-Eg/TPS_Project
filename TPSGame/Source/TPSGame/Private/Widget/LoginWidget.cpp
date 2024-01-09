@@ -2,6 +2,8 @@
 
 
 #include "Widget/LoginWidget.h"
+
+#include "TPSGameInstance.h"
 #include "Components/EditableTextBox.h"
 #include "Network/LoginManager.h"
 #include "Widget/JoinWidget.h"
@@ -44,18 +46,26 @@ void ULoginWidget::OpenStartMessage()
 
 void ULoginWidget::PrintMessage(const FString ErrorCode)
 {
-	if (ErrorCode.Equals("Success")) {
-		TLOG_E(TEXT("Success"));
-		OpenStartMessage();
-		return;
-	}
-	else
-	{
+	if (ErrorCode.Equals("NoJoin")||ErrorCode.Equals("PasswordError")) {
 		IdError->SetText(FText::FromString("ID or Password Error"));
 		PwdError->SetText(FText::FromString("ID or Password Error"));
 		return;
 	}
-	
+	else if(ErrorCode.Equals("Error"))
+	{
+		TLOG_E(TEXT("Error"));
+		return;
+	}
+	else
+	{
+		TLOG_E(TEXT("Success"));
+		OpenStartMessage();
+	   auto instance= Cast<UTPSGameInstance>(GetGameInstance());
+		instance->SetNickName((ErrorCode));
+		TLOG_E(TEXT("Set NickName %s"),*instance->GetNickName());
+		return;
+	}
+
 }
 
 bool ULoginWidget::CheckEmptyData()

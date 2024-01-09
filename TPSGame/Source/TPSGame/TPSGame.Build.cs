@@ -20,7 +20,6 @@ public class TPSGame : ModuleRules
         PrivateDependencyModuleNames.AddRange(new string[] { });
 
 
-
         PublicDefinitions.Add("DBG");
         PublicDefinitions.Add("BETA");
         PublicDefinitions.Add("OFFICIAL_BUILD");
@@ -34,6 +33,7 @@ public class TPSGame : ModuleRules
 
         string libPath = Path.Combine("C:/Users/cksdu/Desktop/TPS_Project/TPSGame" + "/ThirdParty/Boost/lib");
 
+        bUseRTTI = true;
 
         PublicAdditionalLibraries.AddRange(new string[] {
         Path.Combine(libPath, "libboost_atomic-vc142-mt-gd-x64-1_84.lib"),

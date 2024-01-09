@@ -12,3 +12,8 @@ DECLARE_LOG_CATEGORY_EXTERN(TPS_LOG, Log, All);
 #define TLOG_E(Format, ...) UE_LOG(TPS_LOG, Error, TEXT("%s %s"), *LOG_CALLINFO, *FString::Printf(Format, ##__VA_ARGS__))//TEXT Error Log
 
 #define CHECK(Expr, ...) {if(!(Expr)) {BBLOG(Error, TEXT("ASSERTION : %s"), TEXT("'"#Expr"'")); return __VA_ARGS__;}}
+
+#define LOCALHOST_IP "127.0.0.1"
+#define SERVER_IP "34.64.125.122"
+#define DB_PORT 8888
+#define SERVER_PORT 7777

@@ -7,9 +7,13 @@
 #pragma warning(disable:4005)
 THIRD_PARTY_INCLUDES_START
 #include <boost/asio.hpp>
+#include<boost/bind.hpp>
 THIRD_PARTY_INCLUDES_END
 
+
+
 #include <iostream>
+#include <string>
 using namespace boost::asio;
 using namespace std;
 /**

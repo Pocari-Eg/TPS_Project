@@ -9,6 +9,7 @@
 
 
 #include "PlayerCharacter.generated.h"
+class ClientThread;
 UCLASS()
 class TPSGAME_API APlayerCharacter : public ACharacter
 {
@@ -35,6 +36,10 @@ private:
 	FOnTimelineFloat RotationCallBack;
 	UPROPERTY()
 	FOnTimelineEvent RotationFinishCallback;
+
+
+	//network;
+	ClientThread* client;
 protected:
 	class UPlayerAnimInstance* PlayerAnim;
 

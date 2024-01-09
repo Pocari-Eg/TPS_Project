@@ -3,7 +3,3 @@
 
 #include "TPSGameInstance.h"
 #include "Network/LoginManager.h"
-void UTPSGameInstance::MysqlTest()
-{
-
-}
