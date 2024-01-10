@@ -29,7 +29,7 @@ private:
 	UPROPERTY()
 	UEditableTextBox* PASSWORD;
 	UPROPERTY()
-	UEditableTextBox* NICKNAME;
+	UEditableTextBox* NickName;
 	UPROPERTY()
 	UCanvasPanel* MessagePanel;
 	UPROPERTY()

@@ -11,6 +11,7 @@
 
 #include "Character/PlayerAnimInstance.h"
 #include "Math.h"
+#include "TPSGameInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -82,8 +83,10 @@ APlayerCharacter::APlayerCharacter()
     
     	RotationTimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("RotationTimeLine"));
 
+
 	
 	client = new ClientThread();
+	
 }
 
 // Called when the game starts or when spawned
@@ -92,10 +95,22 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 	PlayerAnim=Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 	InitRotatingCurve();
-
 	
+	  auto instance = Cast<UTPSGameInstance>(GetGameInstance());
+	if(instance!=nullptr)
+	{
+       // client->SetNickName(instance->GetNickName());
+		client->SetNickName("Pocari");
+	}
 	 client->StartThreads();
 	
+}
+
+void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	
+	client->Stop();
 }
 
 // Called every frame

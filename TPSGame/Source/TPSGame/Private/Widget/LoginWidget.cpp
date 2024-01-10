@@ -62,7 +62,7 @@ void ULoginWidget::PrintMessage(const FString ErrorCode)
 		OpenStartMessage();
 	   auto instance= Cast<UTPSGameInstance>(GetGameInstance());
 		instance->SetNickName((ErrorCode));
-		TLOG_E(TEXT("Set NickName %s"),*instance->GetNickName());
+		TLOG_E(TEXT("Set NickName %s"), *instance->GetNickName());
 		return;
 	}
 

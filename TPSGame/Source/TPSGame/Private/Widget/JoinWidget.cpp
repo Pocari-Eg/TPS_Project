@@ -12,7 +12,7 @@ void UJoinWidget::NativeConstruct()
 
 	ID = Cast<UEditableTextBox>(GetWidgetFromName(TEXT("idBox")));
 	PASSWORD = Cast<UEditableTextBox>(GetWidgetFromName(TEXT("pwdBox")));
-	NICKNAME = Cast<UEditableTextBox>(GetWidgetFromName(TEXT("NickBox")));
+	NickName = Cast<UEditableTextBox>(GetWidgetFromName(TEXT("NickBox")));
 	MessagePanel= Cast<UCanvasPanel>(GetWidgetFromName(TEXT("MessagePanel")));
 	MessageBlock = Cast<UTextBlock>(GetWidgetFromName(TEXT("Message")));
 
@@ -23,7 +23,7 @@ void UJoinWidget::NativeConstruct()
 
 	ID->SetText(FText::FromString(""));
 	PASSWORD->SetText(FText::FromString(""));
-	NICKNAME->SetText(FText::FromString(""));
+	NickName->SetText(FText::FromString(""));
 	IdError->SetText(FText::FromString(""));
 	PwdError->SetText(FText::FromString(""));
 	NameError->SetText(FText::FromString(""));
@@ -35,7 +35,7 @@ void UJoinWidget::ClearText()
 {
 	ID->SetText(FText::FromString(""));
 	PASSWORD->SetText(FText::FromString(""));
-	NICKNAME->SetText(FText::FromString(""));
+	NickName->SetText(FText::FromString(""));
 	IdError->SetText(FText::FromString(""));
 	PwdError->SetText(FText::FromString(""));
 	NameError->SetText(FText::FromString(""));
@@ -47,7 +47,7 @@ void UJoinWidget::TryJoin()
 
 	if(!CheckEmptyData())
 	{
-		const FString ErrorCode=m_LoginManager->Join(ID->Text,PASSWORD->Text,NICKNAME->Text);
+		const FString ErrorCode=m_LoginManager->Join(ID->Text,PASSWORD->Text,NickName->Text);
 		PrintMessage(ErrorCode);
 	}
 
@@ -117,7 +117,7 @@ bool UJoinWidget::CheckEmptyData()
 	else{
 		PwdError->SetText(FText::FromString(""));
 	}
-	if(NICKNAME->GetText().ToString().Equals(""))
+	if(NickName->GetText().ToString().Equals(""))
 	{
 		NameError->SetText(FText::FromString("Empty NickName"));
 		result=true;

@@ -10,6 +10,7 @@
 struct LoginStruct;
 
 
+using namespace boost::asio;
 class TPSGAME_API LoginManager
 {
 public:
