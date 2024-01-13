@@ -2,7 +2,7 @@
 
 
 #include "NetWork/ClientThread.h"
-
+#include "Character/PlayerCharacter.h"
 
 
 ClientThread::ClientThread()
@@ -70,7 +70,7 @@ void ClientThread::StopThreads()
 	ios.stop();
 
 	// 소켓을 닫기 전에 모든 비동기 작업이 완료될 때까지 대기합니다.
-	for (int i = 0; i < 3; ++i) {
+	for (int i = 0; i < Thread.Max(); ++i) {
 		Thread[i]->WaitForCompletion();
 	}
 
@@ -82,8 +82,16 @@ void ClientThread::StopThreads()
 
 void ClientThread::Send()
 {
-	FPlatformProcess::Sleep(2.0f);
-	sock.async_write_some(asio::buffer("TestSend"), bind(&ClientThread::SendHandle, this, _1));
+	FPlatformProcess::Sleep(0.05f);
+
+	if(IsValid(Player))
+	{
+
+		string Location=Location2String(Player->GetActorLocation());
+		sock.async_write_some(asio::buffer(Location), bind(&ClientThread::SendHandle, this, _1));
+	}
+	
+	
 }
 
 void ClientThread::SendHandle(const boost::system::error_code& ec)
@@ -106,9 +114,6 @@ void ClientThread::Recieve()
 
 void ClientThread::ReceiveHandle(const boost::system::error_code& ec, size_t size)
 {
-
-
-
 	if (ec)
 	{
 		TLOG_W(TEXT("Aysnc_write_some error"));
@@ -133,6 +138,12 @@ void ClientThread::ReceiveHandle(const boost::system::error_code& ec, size_t siz
 	lock.unlock();
 
 	Recieve();
+}
+
+void ClientThread::BindPlayer(FString value, APlayerCharacter* p)
+{
+	Player=p;
+	NickName=value;
 }
 
 
@@ -166,4 +177,29 @@ void ClientThread::OnConnect(const boost::system::error_code& ec)
 
 	ios.post(bind(&ClientThread::Send, this));
 	ios.post(bind(&ClientThread::Recieve, this));
+}
+
+std::string ClientThread::Location2String(FVector location)
+{
+string str=":pos ";
+	
+	str+=Cutfloat(location.X)+",";
+	str+=Cutfloat(location.Y)+",";
+	str+=Cutfloat(location.Z);
+	return str; 
+}
+
+string ClientThread::Cutfloat(float value)
+{
+	std::string stringNumber = std::to_string(value);
+    
+	// 찾아낸 소수점의 위치
+	size_t dotPosition = stringNumber.find('.');
+    
+	// 소수점 이하 1자리까지 자르기
+	if (dotPosition != std::string::npos && dotPosition + 2 < stringNumber.length()) {
+		stringNumber.erase(dotPosition + 2, stringNumber.length() - dotPosition - 2);
+	}
+
+	return stringNumber;
 }

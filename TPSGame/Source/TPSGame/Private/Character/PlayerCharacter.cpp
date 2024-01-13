@@ -95,15 +95,17 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 	PlayerAnim=Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 	InitRotatingCurve();
-	
-	  auto instance = Cast<UTPSGameInstance>(GetGameInstance());
-	if(instance!=nullptr)
+
+	if(bIsPlayerCharacter)
 	{
-       // client->SetNickName(instance->GetNickName());
-		client->SetNickName("Pocari");
+		
+		auto instance = Cast<UTPSGameInstance>(GetGameInstance());
+		if(instance!=nullptr)
+		{
+			client->BindPlayer(instance->GetNickName(),this);
+		}
+		client->StartThreads();
 	}
-	 client->StartThreads();
-	
 }
 
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -118,6 +120,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	
 	HeadFollowing();
    if(PlayerAnim->GetbIsWalk())CameraFollowPlayer();
 

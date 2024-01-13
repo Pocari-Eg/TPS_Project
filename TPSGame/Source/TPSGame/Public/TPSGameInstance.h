@@ -10,19 +10,39 @@
 /**
  * 
  */
+class APlayerCharacter;
 UCLASS()
 class TPSGAME_API UTPSGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
-private:UPROPERTY()
+private:
+	UPROPERTY()
 	FString m_NickName;
-	
+	UPROPERTY()
+	TMap<FString,APlayerCharacter*> PlayerList;
+	UPROPERTY()
+	TSubclassOf<APlayerCharacter> PlayerClass;
 public:
-	UFUNCTION()
+
+	//constructor
+	UTPSGameInstance();
+  
+
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnPlayer();
+	
+	//network
+	UFUNCTION(BlueprintCallable)
 	void SetNickName(FString value){m_NickName=value;}
-	//UFUNCTION()
-	//FString GetNickNameW(){return m_NickName;}
 	UFUNCTION()
-		FString GetNickName() { return m_NickName; }
+	FString GetNickName() { return m_NickName; }
+	
+
+	void AddPlayCharacter(FString name);
+	TMap<FString,APlayerCharacter*> GetPlayerList();
+
+	bool AlreadyInList(FString name);
+	void SortPlayerList();
 };

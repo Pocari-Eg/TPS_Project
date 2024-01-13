@@ -22,6 +22,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* FollowCamera;
 
+	
 
 	//TimeLine
 	// Rotation
@@ -38,8 +39,11 @@ private:
 	FOnTimelineEvent RotationFinishCallback;
 
 
+	
+                  
 	//network;
 	ClientThread* client;
+	bool bIsPlayerCharacter=false;
 protected:
 	class UPlayerAnimInstance* PlayerAnim;
 
@@ -90,6 +94,10 @@ UFUNCTION()
 	void InitRotatingCurve();
 	
 public:
+	UFUNCTION()
+	void SetPlayerCharacter(){bIsPlayerCharacter=true;}
+
+	
 	//debug
 	UPROPERTY(EditAnywhere,Category="DEBUG")
 	float CameraSpeed;
@@ -98,6 +106,7 @@ public:
 	UPROPERTY(EditAnywhere,Category="DEBUG")
 	 float LimitAngle=90.0f;
 
+	
 
 
 #pragma endregion Function

@@ -11,7 +11,7 @@
  * 
  */
 
- 
+ class APlayerCharacter;
 class TPSGAME_API ClientThread : public FRunnable
 {
 #pragma region var
@@ -31,6 +31,8 @@ private:
 	TArray<FRunnableThread*> Thread;
 
 	FString NickName;
+
+	APlayerCharacter* Player;
 #pragma endregion var
 
 
@@ -46,20 +48,22 @@ public:
 
 	//  스레드 시작 함수
 	void StartThreads();
-
 	//  스레드 종료 함수
 	void StopThreads();
-
 	//send
 	void Send();
 	void SendHandle(const boost::system::error_code& ec);
     //recv
 	void Recieve();
 	void ReceiveHandle(const boost::system::error_code& ec, size_t size);
-
-	void SetNickName(FString value){NickName=value;}
 	
+	void BindPlayer(FString value,APlayerCharacter* p);
+
 void TryConnect();
 void OnConnect(const boost::system::error_code& ec);
+
+private:
+	string Location2String(FVector location);
+	string Cutfloat(float value);
 #pragma endregion func
 };
