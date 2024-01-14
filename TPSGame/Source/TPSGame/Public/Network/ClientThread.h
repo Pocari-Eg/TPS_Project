@@ -25,7 +25,8 @@ private:
 
 	std::string sbuf;
 	std::string rbuf;
-	char buf[80];
+	char buf[9999];
+	
 	std::mutex lock;
 	
 	TArray<FRunnableThread*> Thread;
@@ -59,9 +60,14 @@ public:
 	
 	void BindPlayer(FString value,APlayerCharacter* p);
 
+	//connect
 void TryConnect();
 void OnConnect(const boost::system::error_code& ec);
 
+	//플레이어 리스트 역직렬화
+	std::vector<std::string> deserializeStringArray(const std::string& serialized);
+	void PacketManager(FString Message);
+	
 private:
 	string Location2String(FVector location);
 	string Cutfloat(float value);

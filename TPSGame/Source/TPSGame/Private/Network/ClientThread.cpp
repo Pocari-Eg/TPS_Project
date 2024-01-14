@@ -86,12 +86,9 @@ void ClientThread::Send()
 
 	if(IsValid(Player))
 	{
-
 		string Location=Location2String(Player->GetActorLocation());
 		sock.async_write_some(asio::buffer(Location), bind(&ClientThread::SendHandle, this, _1));
 	}
-	
-	
 }
 
 void ClientThread::SendHandle(const boost::system::error_code& ec)
@@ -110,6 +107,7 @@ void ClientThread::Recieve()
 {
 	TLOG_W(TEXT("Recieve"));
 	sock.async_read_some(asio::buffer(buf, 80), bind(&ClientThread::ReceiveHandle, this, _1, _2));
+
 }
 
 void ClientThread::ReceiveHandle(const boost::system::error_code& ec, size_t size)
@@ -133,6 +131,18 @@ void ClientThread::ReceiveHandle(const boost::system::error_code& ec, size_t siz
 
 	FString RecvMessage = rbuf.c_str();
 
+
+    
+	
+	// vector<std::string> ser= deserializeStringArray(rbuf);
+	//
+	// for(int i=0;i<ser.size();i++)
+	// {
+	// 	FString RecvMessage = ser[i].c_str();
+	// 	TLOG_W(TEXT("%s") ,*RecvMessage);
+	// }
+
+	
 	lock.lock();
      TLOG_E(TEXT("Receive data : %s"), *RecvMessage);
 	lock.unlock();
@@ -151,8 +161,6 @@ void ClientThread::TryConnect()
 {
 	TLOG_W(TEXT("Try Connect"));
 	sock.async_connect(ep, boost::bind(&ClientThread::OnConnect, this, _1));
-
-
 	
 }
 
@@ -177,6 +185,29 @@ void ClientThread::OnConnect(const boost::system::error_code& ec)
 
 	ios.post(bind(&ClientThread::Send, this));
 	ios.post(bind(&ClientThread::Recieve, this));
+}
+
+std::vector<std::string> ClientThread::deserializeStringArray(const std::string& serialized)
+{
+	std::istringstream iss(serialized);
+	std::vector<std::string> result;
+
+	// 배열의 크기를 먼저 읽음
+	size_t arraySize;
+	iss >> arraySize;
+
+	// 각 문자열을 차례대로 읽어와 배열에 추가
+	for (size_t i = 0; i < arraySize; ++i) {
+		size_t strLength;
+		iss >> strLength;
+
+		std::string str;
+		iss >> str;
+
+		result.push_back(str);
+	}
+
+	return result;
 }
 
 std::string ClientThread::Location2String(FVector location)

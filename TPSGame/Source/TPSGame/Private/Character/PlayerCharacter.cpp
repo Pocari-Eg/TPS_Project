@@ -95,17 +95,6 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 	PlayerAnim=Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 	InitRotatingCurve();
-
-	if(bIsPlayerCharacter)
-	{
-		
-		auto instance = Cast<UTPSGameInstance>(GetGameInstance());
-		if(instance!=nullptr)
-		{
-			client->BindPlayer(instance->GetNickName(),this);
-		}
-		client->StartThreads();
-	}
 }
 
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -267,6 +256,13 @@ void APlayerCharacter::InitRotatingCurve()
 	float Max = 0.0f;
 	RotationCurve->GetTimeRange(Min, Max);
 	RotationTimeLine->SetTimelineLength(Max);
+}
+
+void APlayerCharacter::SetPlayerCharacter(FString name)
+{
+	NickName=name;
+	client->BindPlayer(NickName,this);
+	client->StartThreads();
 }
 
 

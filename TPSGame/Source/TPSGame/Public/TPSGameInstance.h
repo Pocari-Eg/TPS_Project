@@ -18,7 +18,7 @@ class TPSGAME_API UTPSGameInstance : public UGameInstance
 	
 private:
 	UPROPERTY()
-	FString m_NickName;
+	FString m_NickName="Pocari";
 	UPROPERTY()
 	TMap<FString,APlayerCharacter*> PlayerList;
 	UPROPERTY()
@@ -39,8 +39,8 @@ public:
 	UFUNCTION()
 	FString GetNickName() { return m_NickName; }
 	
-
-	void AddPlayCharacter(FString name);
+	UFUNCTION(BlueprintCallable)
+	void AddPlayUser(FString name);
 	TMap<FString,APlayerCharacter*> GetPlayerList();
 
 	bool AlreadyInList(FString name);

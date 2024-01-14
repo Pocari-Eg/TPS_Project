@@ -43,7 +43,7 @@ private:
                   
 	//network;
 	ClientThread* client;
-	bool bIsPlayerCharacter=false;
+	FString NickName;
 protected:
 	class UPlayerAnimInstance* PlayerAnim;
 
@@ -95,7 +95,7 @@ UFUNCTION()
 	
 public:
 	UFUNCTION()
-	void SetPlayerCharacter(){bIsPlayerCharacter=true;}
+	void SetPlayerCharacter(FString name);
 
 	
 	//debug

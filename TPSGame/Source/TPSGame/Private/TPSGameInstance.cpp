@@ -18,18 +18,27 @@ UTPSGameInstance::UTPSGameInstance()
 
 void UTPSGameInstance::SpawnPlayer()
 {
-APlayerCharacter* player =	GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,75.0f),FRotator::ZeroRotator);
-	player->SetPlayerCharacter();
+    APlayerCharacter*  player =	GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,75.0f),FRotator::ZeroRotator);
+	player->SetPlayerCharacter(GetNickName());
 	PlayerList.Add(GetNickName(),player);
+
+	GetWorld()->GetFirstPlayerController()->Possess(player);
 }
 
-void UTPSGameInstance::AddPlayCharacter(FString name)
+void UTPSGameInstance::AddPlayUser(FString name)
 {
 
 	if(!AlreadyInList(name))
 	{
 		PlayerList.Add(name,GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,75.0f),FRotator::ZeroRotator));
 		SortPlayerList();
+	}
+
+    
+	for(auto it =PlayerList.begin();it!=PlayerList.end();	++it)
+	{
+		TLOG_E(TEXT("Player List : %s"),*it->Key);
+	
 	}
 }
 
@@ -53,7 +62,6 @@ void UTPSGameInstance::SortPlayerList()
 {
 	PlayerList.KeySort([](FString A, FString B)
 	{
-
 		return A>B;
 	});
 }
