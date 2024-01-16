@@ -114,6 +114,18 @@ void APlayerCharacter::Tick(float DeltaTime)
    if(PlayerAnim->GetbIsWalk())CameraFollowPlayer();
 
 
+	if(!NameList.IsEmpty())
+	{
+		auto i=Cast<UTPSGameInstance>(GetGameInstance());
+	
+		if(i!=nullptr)
+		{
+			FString n;
+			NameList.Dequeue(n);
+			i->AddPlayUser(n);
+		}
+	}
+
 
 
 }
@@ -258,13 +270,13 @@ void APlayerCharacter::InitRotatingCurve()
 	RotationTimeLine->SetTimelineLength(Max);
 }
 
-void APlayerCharacter::SetPlayerCharacter(FString name)
+void APlayerCharacter::SetPlayerCharacter(const FString&  name)
 {
 	NickName=name;
-	client->BindPlayer(NickName,this);
+	TLOG_E(TEXT("SetPlayerCharacter"));
+	client->BindPlayer(NickName,this,&NameList);
 	client->StartThreads();
+	
 }
-
-
 
 

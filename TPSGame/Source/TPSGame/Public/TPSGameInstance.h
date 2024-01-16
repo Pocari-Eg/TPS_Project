@@ -40,7 +40,7 @@ public:
 	FString GetNickName() { return m_NickName; }
 	
 	UFUNCTION(BlueprintCallable)
-	void AddPlayUser(FString name);
+	void AddPlayUser(const FString& name);
 	TMap<FString,APlayerCharacter*> GetPlayerList();
 
 	bool AlreadyInList(FString name);

@@ -5,13 +5,16 @@
 #include "TPSGame.h"
 #include "NetworkBase.h"
 
+
 #include "HAL/Runnable.h"
 #include "HAL/RunnableThread.h"
 /**
  * 
  */
 
+enum MessageType {INVALID,ADD };
  class APlayerCharacter;
+class UTPSGameInstance;
 class TPSGAME_API ClientThread : public FRunnable
 {
 #pragma region var
@@ -34,6 +37,9 @@ private:
 	FString NickName;
 
 	APlayerCharacter* Player;
+	UTPSGameInstance* instance;
+
+	TQueue<FString>* PlayerList;
 #pragma endregion var
 
 
@@ -58,16 +64,19 @@ public:
 	void Recieve();
 	void ReceiveHandle(const boost::system::error_code& ec, size_t size);
 	
-	void BindPlayer(FString value,APlayerCharacter* p);
+	void BindPlayer(FString value,APlayerCharacter* p,TQueue<FString>* TempList);
 
 	//connect
 void TryConnect();
 void OnConnect(const boost::system::error_code& ec);
 
 	//플레이어 리스트 역직렬화
-	std::vector<std::string> deserializeStringArray(const std::string& serialized);
-	void PacketManager(FString Message);
-	
+	void deserializeStringArray(const std::string& serialized);
+	void PacketManager(string Message);
+	MessageType  TranslatePacket(string message);
+
+
+	void AddPlayerList(string list);
 private:
 	string Location2String(FVector location);
 	string Cutfloat(float value);

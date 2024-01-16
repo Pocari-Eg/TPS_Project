@@ -21,25 +21,23 @@ void UTPSGameInstance::SpawnPlayer()
     APlayerCharacter*  player =	GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,75.0f),FRotator::ZeroRotator);
 	player->SetPlayerCharacter(GetNickName());
 	PlayerList.Add(GetNickName(),player);
-
 	GetWorld()->GetFirstPlayerController()->Possess(player);
+
 }
 
-void UTPSGameInstance::AddPlayUser(FString name)
+void UTPSGameInstance::AddPlayUser(const FString& name)
 {
-
-	if(!AlreadyInList(name))
-	{
-		PlayerList.Add(name,GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,75.0f),FRotator::ZeroRotator));
-		SortPlayerList();
-	}
-
-    
-	for(auto it =PlayerList.begin();it!=PlayerList.end();	++it)
-	{
-		TLOG_E(TEXT("Player List : %s"),*it->Key);
 	
+	if(name!=m_NickName||!AlreadyInList(name))
+	{
+		 APlayerCharacter* NewPlayer=GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,75.0f),FRotator::ZeroRotator);
+		 PlayerList.Add(name,NULL);
+		 SortPlayerList();
+		 TLOG_E(TEXT("%s Player In Game "),*name);
 	}
+
+
+
 }
 
 TMap<FString,APlayerCharacter*> UTPSGameInstance::GetPlayerList()

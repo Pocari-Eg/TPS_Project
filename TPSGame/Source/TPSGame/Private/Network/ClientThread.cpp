@@ -3,7 +3,7 @@
 
 #include "NetWork/ClientThread.h"
 #include "Character/PlayerCharacter.h"
-
+#include "TPSGameInstance.h"
 
 ClientThread::ClientThread()
 :ep(asio::ip::address::from_string(LOCALHOST_IP),SERVER_PORT),
@@ -86,8 +86,8 @@ void ClientThread::Send()
 
 	if(IsValid(Player))
 	{
-		string Location=Location2String(Player->GetActorLocation());
-		sock.async_write_some(asio::buffer(Location), bind(&ClientThread::SendHandle, this, _1));
+		//string Location=Location2String(Player->GetActorLocation());
+		//sock.async_write_some(asio::buffer(Location), bind(&ClientThread::SendHandle, this, _1));
 	}
 }
 
@@ -106,7 +106,7 @@ void ClientThread::SendHandle(const boost::system::error_code& ec)
 void ClientThread::Recieve()
 {
 	TLOG_W(TEXT("Recieve"));
-	sock.async_read_some(asio::buffer(buf, 80), bind(&ClientThread::ReceiveHandle, this, _1, _2));
+	sock.async_read_some(asio::buffer(buf, 9999), bind(&ClientThread::ReceiveHandle, this, _1, _2));
 
 }
 
@@ -129,31 +129,16 @@ void ClientThread::ReceiveHandle(const boost::system::error_code& ec, size_t siz
 	buf[size] = '\0';
 	rbuf = buf;
 
-	FString RecvMessage = rbuf.c_str();
-
-
-    
-	
-	// vector<std::string> ser= deserializeStringArray(rbuf);
-	//
-	// for(int i=0;i<ser.size();i++)
-	// {
-	// 	FString RecvMessage = ser[i].c_str();
-	// 	TLOG_W(TEXT("%s") ,*RecvMessage);
-	// }
-
-	
-	lock.lock();
-     TLOG_E(TEXT("Receive data : %s"), *RecvMessage);
-	lock.unlock();
+	PacketManager(rbuf);
 
 	Recieve();
 }
 
-void ClientThread::BindPlayer(FString value, APlayerCharacter* p)
+void ClientThread::BindPlayer(FString value, APlayerCharacter* p,TQueue<FString>* TempList)
 {
 	Player=p;
 	NickName=value;
+	PlayerList=TempList;
 }
 
 
@@ -187,10 +172,10 @@ void ClientThread::OnConnect(const boost::system::error_code& ec)
 	ios.post(bind(&ClientThread::Recieve, this));
 }
 
-std::vector<std::string> ClientThread::deserializeStringArray(const std::string& serialized)
+void ClientThread::deserializeStringArray(const std::string& serialized)
 {
 	std::istringstream iss(serialized);
-	std::vector<std::string> result;
+
 
 	// 배열의 크기를 먼저 읽음
 	size_t arraySize;
@@ -204,10 +189,54 @@ std::vector<std::string> ClientThread::deserializeStringArray(const std::string&
 		std::string str;
 		iss >> str;
 
-		result.push_back(str);
+		FString n =str.c_str();
+		PlayerList->Enqueue(n);
 	}
+	
+}
 
-	return result;
+void ClientThread::PacketManager(string Message)
+{
+	// :~ 라는 특수(?)메세지를 보내왔을 경우 처리
+	if (Message[0] == ':')
+	{
+		MessageType code = TranslatePacket(Message);
+
+		switch (code)
+		{
+		case MessageType::ADD:
+			AddPlayerList(Message);
+			break;
+		case MessageType::INVALID:
+            TLOG_E(TEXT("Unsupported message command."));
+			break;
+		}
+	}
+	else  // :~ 라는 특수메세지가 아니고 그냥 채팅일 경우
+	{
+		FString msg=Message.c_str();
+		lock.lock();
+		TLOG_E(TEXT("%s"),*msg);
+		lock.unlock();
+	}
+}
+
+MessageType ClientThread::TranslatePacket(string message)
+{
+
+	
+	string temp = message.substr(0, sizeof(":add ") - 1);
+	if (temp.compare(":add ") == 0)
+	{
+		return MessageType::ADD;
+	}
+	return MessageType::INVALID;
+}
+
+void ClientThread::AddPlayerList(string list)
+{
+	string temp = list.substr(sizeof(":add ") - 1, list.length());
+	deserializeStringArray(temp);
 }
 
 std::string ClientThread::Location2String(FVector location)

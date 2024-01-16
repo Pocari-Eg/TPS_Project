@@ -23,6 +23,7 @@ private:
 		class UCameraComponent* FollowCamera;
 
 	
+	TQueue<FString> NameList;
 
 	//TimeLine
 	// Rotation
@@ -95,8 +96,7 @@ UFUNCTION()
 	
 public:
 	UFUNCTION()
-	void SetPlayerCharacter(FString name);
-
+	void SetPlayerCharacter(const FString& name);
 	
 	//debug
 	UPROPERTY(EditAnywhere,Category="DEBUG")
@@ -105,8 +105,6 @@ public:
 	bool bIsDebug=true;
 	UPROPERTY(EditAnywhere,Category="DEBUG")
 	 float LimitAngle=90.0f;
-
-	
 
 
 #pragma endregion Function
