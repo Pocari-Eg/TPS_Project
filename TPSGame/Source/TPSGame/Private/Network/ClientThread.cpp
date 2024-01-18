@@ -84,11 +84,11 @@ void ClientThread::Send()
 {
 	FPlatformProcess::Sleep(0.05f);
 
-	if(IsValid(Player))
-	{
-		//string Location=Location2String(Player->GetActorLocation());
-		//sock.async_write_some(asio::buffer(Location), bind(&ClientThread::SendHandle, this, _1));
-	}
+	// if(IsValid(Player))
+	// {
+	// 	string Location=Location2String(Player->GetActorLocation());
+	// 	sock.async_write_some(asio::buffer(Location), bind(&ClientThread::SendHandle, this, _1));
+	// }
 }
 
 void ClientThread::SendHandle(const boost::system::error_code& ec)
@@ -127,8 +127,22 @@ void ClientThread::ReceiveHandle(const boost::system::error_code& ec, size_t siz
 	}
 
 	buf[size] = '\0';
-	rbuf = buf;
+	
 
+
+	if(string(buf).compare(":rep ")==0)
+	{
+		UserCount = Player->GetInstance()->GetUserCount();
+		TLOG_E(TEXT("%d"), UserCount);
+		int32 bufsize=UserCount*25;
+		bufsize+=5;
+		string temp(buf,bufsize);
+		rbuf=temp;
+	}
+	else
+	{
+		rbuf = buf;
+	}
 	PacketManager(rbuf);
 
 	Recieve();
@@ -207,6 +221,9 @@ void ClientThread::PacketManager(string Message)
 		case MessageType::ADD:
 			AddPlayerList(Message);
 			break;
+		case MessageType::REP:
+			if(UserCount>=2) GetReplicationData(Message);
+			break;
 		case MessageType::INVALID:
             TLOG_E(TEXT("Unsupported message command."));
 			break;
@@ -223,12 +240,15 @@ void ClientThread::PacketManager(string Message)
 
 MessageType ClientThread::TranslatePacket(string message)
 {
-
-	
 	string temp = message.substr(0, sizeof(":add ") - 1);
 	if (temp.compare(":add ") == 0)
 	{
 		return MessageType::ADD;
+	}
+	 temp = message.substr(0, sizeof(":rep ") - 1);
+	if(temp.compare(":rep ")==0)
+	{
+		return MessageType::REP;
 	}
 	return MessageType::INVALID;
 }
@@ -237,6 +257,66 @@ void ClientThread::AddPlayerList(string list)
 {
 	string temp = list.substr(sizeof(":add ") - 1, list.length());
 	deserializeStringArray(temp);
+}
+
+Replication ClientThread::deserializeReplication(const std::string& data)
+{
+	Replication rep;
+
+	// Pos를 역직렬화
+	std::memcpy(&rep.Pos, data.data(), sizeof(rep.Pos));
+
+	// Rot를 역직렬화
+	std::memcpy(&rep.Rot, data.data() + sizeof(rep.Pos), sizeof(rep.Rot));
+
+	// state를 역직렬화 (명시적으로 정수형으로 캐스팅)
+	std::uint8_t stateValue;
+	std::memcpy(&stateValue, data.data() + sizeof(rep.Pos) + sizeof(rep.Rot), sizeof(std::uint8_t));
+	rep.state = static_cast<State>(stateValue);
+
+	return rep;
+}
+
+std::vector<Replication> ClientThread::deserializeReplicationArray(const std::string& data)
+{
+	std::vector<Replication> repArray;
+
+	for (std::size_t i = 0; i < data.size(); i += sizeof(repArray[0].Pos) + sizeof(repArray[0].Rot) + sizeof(std::uint8_t)) {
+		// 바이트 스트림에서 각 구조체의 크기만큼 자르고 역직렬화
+		std::string repData = data.substr(i, sizeof(repArray[0].Pos) + sizeof(repArray[0].Rot) + sizeof(std::uint8_t));
+		repArray.push_back(deserializeReplication(repData));
+	}
+
+	return repArray;
+}
+
+void ClientThread::GetReplicationData(string message)
+{
+
+	string temp = message.substr(sizeof(":rep ") - 1, message.length());
+	std::vector<Replication> restoredArray = deserializeReplicationArray(temp);
+
+
+	TLOG_E(TEXT("%d"),restoredArray.size());
+	for(int i=0;i<restoredArray.size();i++)
+	{
+		TLOG_E(TEXT("%f,%f,%f"),restoredArray[i].Pos[0],restoredArray[i].Pos[1],restoredArray[i].Pos[2]);
+		TLOG_E(TEXT("%f,%f,%f"),restoredArray[i].Rot[0],restoredArray[i].Rot[1],restoredArray[i].Rot[2]);
+
+		switch (restoredArray[i].state)
+		{
+		case State::IDLE:
+			TLOG_E(TEXT("IDLE"));
+			break;
+		case State::WALK:
+			TLOG_E(TEXT("WALK"));
+			break;
+		default:
+			break;
+		}
+
+		TLOG_E(TEXT("////////////"));
+	}
 }
 
 std::string ClientThread::Location2String(FVector location)

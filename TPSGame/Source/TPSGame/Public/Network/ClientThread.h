@@ -12,7 +12,7 @@
  * 
  */
 
-enum MessageType {INVALID,ADD };
+enum MessageType {INVALID,ADD,REP };
  class APlayerCharacter;
 class UTPSGameInstance;
 class TPSGAME_API ClientThread : public FRunnable
@@ -37,9 +37,9 @@ private:
 	FString NickName;
 
 	APlayerCharacter* Player;
-	UTPSGameInstance* instance;
-
 	TQueue<FString>* PlayerList;
+
+	int32 UserCount;
 #pragma endregion var
 
 
@@ -74,9 +74,15 @@ void OnConnect(const boost::system::error_code& ec);
 	void deserializeStringArray(const std::string& serialized);
 	void PacketManager(string Message);
 	MessageType  TranslatePacket(string message);
-
-
+	
 	void AddPlayerList(string list);
+
+	//리플리케이션
+	Replication deserializeReplication(const std::string& data);
+	std::vector<Replication> deserializeReplicationArray(const std::string& data);
+
+
+	void GetReplicationData(string message);
 private:
 	string Location2String(FVector location);
 	string Cutfloat(float value);

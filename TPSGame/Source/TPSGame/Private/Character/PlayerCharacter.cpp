@@ -95,6 +95,8 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 	PlayerAnim=Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 	InitRotatingCurve();
+
+	instance=Cast<UTPSGameInstance>(GetGameInstance());
 }
 
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -116,13 +118,13 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	if(!NameList.IsEmpty())
 	{
-		auto i=Cast<UTPSGameInstance>(GetGameInstance());
+		
 	
-		if(i!=nullptr)
+		if(instance!=nullptr)
 		{
 			FString n;
 			NameList.Dequeue(n);
-			i->AddPlayUser(n);
+			instance->AddPlayUser(n);
 		}
 	}
 

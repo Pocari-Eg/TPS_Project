@@ -45,4 +45,7 @@ public:
 
 	bool AlreadyInList(FString name);
 	void SortPlayerList();
+
+	UFUNCTION()
+	const int32 GetUserCount();
 };

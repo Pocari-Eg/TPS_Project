@@ -63,3 +63,8 @@ void UTPSGameInstance::SortPlayerList()
 		return A>B;
 	});
 }
+
+const int32 UTPSGameInstance::GetUserCount()
+{
+	return PlayerList.Num();
+}

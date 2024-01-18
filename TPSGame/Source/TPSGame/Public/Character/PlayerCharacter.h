@@ -47,6 +47,7 @@ private:
 	FString NickName;
 protected:
 	class UPlayerAnimInstance* PlayerAnim;
+	class UTPSGameInstance* instance;
 
 #pragma region Function	
 public:
@@ -97,6 +98,9 @@ UFUNCTION()
 public:
 	UFUNCTION()
 	void SetPlayerCharacter(const FString& name);
+
+	UFUNCTION()
+	UTPSGameInstance* GetInstance(){return instance;}
 	
 	//debug
 	UPROPERTY(EditAnywhere,Category="DEBUG")
