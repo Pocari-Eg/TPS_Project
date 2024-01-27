@@ -21,7 +21,7 @@ using namespace std;
  * 
  */
 
-struct LoginStruct
+struct FLoginStruct
 {
     std::array<char, 25> id;
     std::array<char, 25> pwd;
@@ -29,13 +29,5 @@ struct LoginStruct
 };
 
 
-enum State {
-	IDLE = 0,
-	WALK
-};
 
-struct Replication {
-	float Pos[3];
-	float Rot[3];
-	State state;
-};
+

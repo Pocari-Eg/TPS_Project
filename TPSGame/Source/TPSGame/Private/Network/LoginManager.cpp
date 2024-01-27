@@ -23,7 +23,7 @@ FString LoginManager::Login(FText id, FText pwd)
         TLOG_W(TEXT("Conncet DB SERVER"));
 
 
-        LoginStruct Data;
+        FLoginStruct Data;
         Data.id = ConvertArrayChar<25>(id);
         Data.pwd = ConvertArrayChar<25>(pwd);
         Data.NickName = ConvertArrayChar<25>("LOGIN");
@@ -64,7 +64,7 @@ FString LoginManager::Join(FText id, FText pwd, FText name)
            TLOG_W(TEXT("Conncet DB SERVER"));
                    
 
-        LoginStruct Data;
+        FLoginStruct Data;
         Data.id = ConvertArrayChar<25>(id);
         Data.pwd = ConvertArrayChar<25>(pwd);
         Data.NickName = ConvertArrayChar<25>(name);
@@ -94,15 +94,15 @@ FString LoginManager::Join(FText id, FText pwd, FText name)
 }
 
 
-std::vector<char> LoginManager::serialize(const LoginStruct& data)
+std::vector<char> LoginManager::serialize(const FLoginStruct& data)
 {
     std::vector<char> buffer(sizeof(data));
     memcpy(buffer.data(), &data, sizeof(data));
     return buffer;
 }
-LoginStruct LoginManager::deserialize(const std::vector<char>& buffer)
+FLoginStruct LoginManager::deserialize(const std::vector<char>& buffer)
 {
-    LoginStruct result;
+    FLoginStruct result;
     memcpy(&result, buffer.data(), sizeof(result));
     return result;
 }

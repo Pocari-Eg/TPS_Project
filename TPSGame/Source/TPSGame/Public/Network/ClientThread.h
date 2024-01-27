@@ -31,6 +31,7 @@ private:
 	char buf[9999];
 	
 	std::mutex lock;
+	boost::asio::steady_timer ReplicationTimer;
 	
 	TArray<FRunnableThread*> Thread;
 
@@ -40,6 +41,9 @@ private:
 	TQueue<FString>* PlayerList;
 
 	int32 UserCount;
+
+
+	bool bIsRunning;
 #pragma endregion var
 
 
@@ -78,13 +82,15 @@ void OnConnect(const boost::system::error_code& ec);
 	void AddPlayerList(string list);
 
 	//리플리케이션
-	Replication deserializeReplication(const std::string& data);
-	std::vector<Replication> deserializeReplicationArray(const std::string& data);
+	FReplication deserializeReplication(const std::string& data);
+	std::vector<FReplication> deserializeReplicationArray(const std::string& data);
 
-
+	std::string SerializeReplication(const FReplication& rep);
+	
 	void GetReplicationData(string message);
+
+
 private:
-	string Location2String(FVector location);
 	string Cutfloat(float value);
 #pragma endregion func
 };

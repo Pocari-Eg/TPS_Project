@@ -7,7 +7,7 @@
 
 #include "NetworkBase.h"
 
-struct LoginStruct;
+struct FLoginStruct;
 
 
 using namespace boost::asio;
@@ -23,8 +23,8 @@ public:
 private:
 
 
-	std::vector<char>serialize(const LoginStruct& data);
-	LoginStruct deserialize(const std::vector<char>& buffer);
+	std::vector<char>serialize(const FLoginStruct& data);
+	FLoginStruct deserialize(const std::vector<char>& buffer);
 
 
 template<size_t arraySize>

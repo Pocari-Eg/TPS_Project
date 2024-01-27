@@ -4,12 +4,13 @@
 
 #include "TPSGame.h"
 #include "Engine/GameInstance.h"
-
+#include "Network/NetworkBase.h"
 #include "TPSGameInstance.generated.h"
 
 /**
  * 
  */
+
 class APlayerCharacter;
 UCLASS()
 class TPSGAME_API UTPSGameInstance : public UGameInstance
@@ -23,6 +24,7 @@ private:
 	TMap<FString,APlayerCharacter*> PlayerList;
 	UPROPERTY()
 	TSubclassOf<APlayerCharacter> PlayerClass;
+
 public:
 
 	//constructor
@@ -41,11 +43,14 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void AddPlayUser(const FString& name);
-	TMap<FString,APlayerCharacter*> GetPlayerList();
+	const TMap<FString,APlayerCharacter*>& GetPlayerList();
 
 	bool AlreadyInList(FString name);
 	void SortPlayerList();
 
+	void UpdateUserPos(const std::vector<FReplication>& data);
+	
+	
 	UFUNCTION()
 	const int32 GetUserCount();
 };

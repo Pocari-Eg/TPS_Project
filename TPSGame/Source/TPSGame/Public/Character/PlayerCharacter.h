@@ -44,7 +44,13 @@ private:
                   
 	//network;
 	ClientThread* client;
+	UPROPERTY()
 	FString NickName;
+
+	FReplication RepliData;
+
+	UPROPERTY()
+		bool bIsPlayer = false;
 protected:
 	class UPlayerAnimInstance* PlayerAnim;
 	class UTPSGameInstance* instance;
@@ -91,6 +97,11 @@ private:
 	void Rotating(float Value);
 	UFUNCTION()
 	void FinishRotation();
+
+
+	//synchronization
+   UFUNCTION()
+	void PositionSync(float DeltaTime);
 	
 UFUNCTION()
 	void InitRotatingCurve();
@@ -109,7 +120,10 @@ public:
 	bool bIsDebug=true;
 	UPROPERTY(EditAnywhere,Category="DEBUG")
 	 float LimitAngle=90.0f;
-
+	UPROPERTY(EditAnywhere,Category="DEBUG")
+	float Time=10.0f;
+	FReplication GetRepliData(){return  RepliData;}
+	void SetReplidata(const FReplication value){RepliData=value;}
 
 #pragma endregion Function
 };

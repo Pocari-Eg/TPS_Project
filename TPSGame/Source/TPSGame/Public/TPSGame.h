@@ -17,3 +17,16 @@ DECLARE_LOG_CATEGORY_EXTERN(TPS_LOG, Log, All);
 #define SERVER_IP "34.64.125.122"
 #define DB_PORT 8888
 #define SERVER_PORT 7777
+
+enum State {
+	IDLE = 0,
+	WALK
+};
+
+
+struct FReplication {
+
+	float PosX,PosY,PosZ;
+	float RotZ;
+	State state;
+};

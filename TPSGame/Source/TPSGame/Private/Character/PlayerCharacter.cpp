@@ -85,7 +85,7 @@ APlayerCharacter::APlayerCharacter()
 
 
 	
-	client = new ClientThread();
+	RepliData={0.0f,0.0f,72.0f,0.0f,IDLE};
 	
 }
 
@@ -102,33 +102,34 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-	
-	client->Stop();
+	if (bIsPlayer)
+	{
+		client->Stop();
+	}
 }
 
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	
 	HeadFollowing();
-   if(PlayerAnim->GetbIsWalk())CameraFollowPlayer();
+	if (PlayerAnim->GetbIsWalk())CameraFollowPlayer();
+	if (bIsPlayer) {
 
-
-	if(!NameList.IsEmpty())
-	{
-		
-	
-		if(instance!=nullptr)
+		if (!NameList.IsEmpty())
 		{
-			FString n;
-			NameList.Dequeue(n);
-			instance->AddPlayUser(n);
+			if (instance != nullptr)
+			{
+				FString n;
+				NameList.Dequeue(n);
+				instance->AddPlayUser(n);
+			}
 		}
 	}
-
-
+	else
+	{
+		PositionSync(DeltaTime);
+	}
 
 }
 
@@ -220,8 +221,6 @@ void APlayerCharacter::CameraFollowPlayer()
 		
 	FQuat RotationQuat = Math::VectorA2BRotation(PlayerV, CameraV);
 	
-
-
 	AddActorWorldRotation(RotationQuat);
 }
 
@@ -257,6 +256,30 @@ void APlayerCharacter::FinishRotation()
 	PrevRotation = 0.0f;
 }
 
+void APlayerCharacter::PositionSync(float DeltaTime)
+{
+
+
+	// 현재 위치와 목표 위치를 가져옴
+	FVector CurrentLocation = GetActorLocation();
+	FVector TargetLocation = FVector(RepliData.PosX,RepliData.PosY,RepliData.PosZ);
+	// 선형 보간을 사용하여 부드러운 이동
+	FVector LerpedLocation = FMath::Lerp(CurrentLocation, TargetLocation, Time*DeltaTime);
+
+	// 현재 회전과 목표 회전을 가져옴
+	FRotator CurrentRotation = GetActorRotation();
+	FRotator TargetRotation = FRotator::ZeroRotator; // 서버에서 받은 회전 등
+	TargetRotation.Yaw=RepliData.RotZ;
+	// 선형 보간을 사용하여 부드러운 회전
+	FRotator LerpedRotation = FMath::Lerp(CurrentRotation, TargetRotation,Time*DeltaTime);
+
+		
+	// 부드러운 이동 적용
+	SetActorLocation(LerpedLocation);
+	// 부드러운 회전 적용
+	SetActorRotation(LerpedRotation);
+}
+
 void APlayerCharacter::InitRotatingCurve()
 {
 
@@ -276,9 +299,12 @@ void APlayerCharacter::SetPlayerCharacter(const FString&  name)
 {
 	NickName=name;
 	TLOG_E(TEXT("SetPlayerCharacter"));
+	client = new ClientThread();
 	client->BindPlayer(NickName,this,&NameList);
 	client->StartThreads();
 	
+	
+	bIsPlayer = true;
 }
 
 

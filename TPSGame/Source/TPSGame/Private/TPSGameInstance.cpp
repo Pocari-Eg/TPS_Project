@@ -31,7 +31,7 @@ void UTPSGameInstance::AddPlayUser(const FString& name)
 	if(name!=m_NickName||!AlreadyInList(name))
 	{
 		 APlayerCharacter* NewPlayer=GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,75.0f),FRotator::ZeroRotator);
-		 PlayerList.Add(name,NULL);
+		 PlayerList.Add(name,NewPlayer);
 		 SortPlayerList();
 		 TLOG_E(TEXT("%s Player In Game "),*name);
 	}
@@ -40,7 +40,7 @@ void UTPSGameInstance::AddPlayUser(const FString& name)
 
 }
 
-TMap<FString,APlayerCharacter*> UTPSGameInstance::GetPlayerList()
+const TMap<FString,APlayerCharacter*>& UTPSGameInstance::GetPlayerList()
 {
 	return PlayerList;
 }
@@ -60,9 +60,22 @@ void UTPSGameInstance::SortPlayerList()
 {
 	PlayerList.KeySort([](FString A, FString B)
 	{
-		return A>B;
+		return A<B;
 	});
 }
+
+void UTPSGameInstance::UpdateUserPos(const std::vector<FReplication>& data)
+{
+ auto it = PlayerList.begin();
+	for(int i=0;i<data.size();i++)
+	{
+		it->Value->SetReplidata(data[i]);
+		 if(it!=PlayerList.end()) ++it;
+
+	}
+	
+}
+
 
 const int32 UTPSGameInstance::GetUserCount()
 {

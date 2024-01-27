@@ -9,6 +9,7 @@ ClientThread::ClientThread()
 :ep(asio::ip::address::from_string(LOCALHOST_IP),SERVER_PORT),
 sock(ios,ep.protocol()),
 work(new asio::io_context::work(ios))
+,ReplicationTimer(ios)
 {}
 
 
@@ -25,8 +26,6 @@ bool ClientThread::Init()
 uint32 ClientThread::Run()
 {
 	// 비동기적으로 데이터를 수신하는 로직을 구현합니다.
-
-
 		TLOG_W(TEXT("WorkerThreading Start"));
 		ios.run();
 
@@ -59,36 +58,55 @@ void ClientThread::StartThreads()
 	}
 	FPlatformProcess::Sleep(0.1f);
 	 ios.post(bind(&ClientThread::TryConnect, this));
+	bIsRunning=true;
 }
 
 void ClientThread::StopThreads()
 {
 
-	TLOG_E(TEXT("Stop Thread"));
+	if(bIsRunning)
+	{
+		bIsRunning=false;
+		TLOG_E(TEXT("Stop Thread"));
 
-	// 더 이상 새로운 비동기 작업을 받지 않도록 io_context를 멈춥니다.
-	ios.stop();
+		// 더 이상 새로운 비동기 작업을 받지 않도록 io_context를 멈춥니다.
+		ios.stop();
 
-	// 소켓을 닫기 전에 모든 비동기 작업이 완료될 때까지 대기합니다.
-	for (int i = 0; i < Thread.Max(); ++i) {
-		Thread[i]->WaitForCompletion();
+		// 소켓을 닫기 전에 모든 비동기 작업이 완료될 때까지 대기합니다.
+		for (int i = 0; i < Thread.Max(); ++i) {
+			Thread[i]->WaitForCompletion();
+		}
+
+		// 소켓을 닫고 모든 작업이 완료되었으므로 work를 리셋합니다.
+		sock.close();
+		work.Reset();
+
+
 	}
-
-	// 소켓을 닫고 모든 작업이 완료되었으므로 work를 리셋합니다.
-	sock.close();
-	work.Reset();
-
 }
 
 void ClientThread::Send()
 {
-	FPlatformProcess::Sleep(0.05f);
 
-	// if(IsValid(Player))
-	// {
-	// 	string Location=Location2String(Player->GetActorLocation());
-	// 	sock.async_write_some(asio::buffer(Location), bind(&ClientThread::SendHandle, this, _1));
-	// }
+	if(IsValid(Player))
+	{
+
+		const FVector PlayerPos=Player->GetActorLocation();
+		const float PosX=PlayerPos.X;
+		const float PosY=PlayerPos.Y;
+		const float PosZ=PlayerPos.Z;
+		const float RotZ=Player->GetActorRotation().Yaw;
+		
+		FReplication temp = {PosX,PosY,PosZ,RotZ,State::IDLE};
+		
+		string Replication=":rep "+SerializeReplication(temp);
+
+		 sock.async_write_some(asio::buffer(Replication), bind(&ClientThread::SendHandle, this, _1));
+	}
+
+	ReplicationTimer.expires_at(ReplicationTimer.expires_at() + std::chrono::milliseconds(100));
+	// 다음 타이머 시작
+	ReplicationTimer.async_wait(boost::bind(&ClientThread::Send, this));
 }
 
 void ClientThread::SendHandle(const boost::system::error_code& ec)
@@ -99,13 +117,11 @@ void ClientThread::SendHandle(const boost::system::error_code& ec)
 		Stop();
 		return;
 	}
-
-	Send();
+	
 }
 
 void ClientThread::Recieve()
 {
-	TLOG_W(TEXT("Recieve"));
 	sock.async_read_some(asio::buffer(buf, 9999), bind(&ClientThread::ReceiveHandle, this, _1, _2));
 
 }
@@ -119,6 +135,7 @@ void ClientThread::ReceiveHandle(const boost::system::error_code& ec, size_t siz
 		return;
 	}
 
+	
 	if (size == 0)
 	{
 		TLOG_E(TEXT("Server wants to close this session"));
@@ -130,19 +147,10 @@ void ClientThread::ReceiveHandle(const boost::system::error_code& ec, size_t siz
 	
 
 
-	if(string(buf).compare(":rep ")==0)
-	{
-		UserCount = Player->GetInstance()->GetUserCount();
-		TLOG_E(TEXT("%d"), UserCount);
-		int32 bufsize=UserCount*25;
-		bufsize+=5;
-		string temp(buf,bufsize);
-		rbuf=temp;
-	}
-	else
-	{
-		rbuf = buf;
-	}
+	UserCount=Player->GetInstance()->GetUserCount();
+
+	rbuf = buf;
+	
 	PacketManager(rbuf);
 
 	Recieve();
@@ -181,8 +189,8 @@ void ClientThread::OnConnect(const boost::system::error_code& ec)
 	LoginMessage += Name;
 	sock.async_write_some(asio::buffer(LoginMessage), bind(&ClientThread::SendHandle, this, _1));
 
-
-	ios.post(bind(&ClientThread::Send, this));
+	ReplicationTimer.expires_from_now(std::chrono::seconds(1)); // 초기 타이머 만료 시간 설정
+	ReplicationTimer.async_wait(boost::bind(&ClientThread::Send, this)); // 타이머 시작
 	ios.post(bind(&ClientThread::Recieve, this));
 }
 
@@ -222,7 +230,12 @@ void ClientThread::PacketManager(string Message)
 			AddPlayerList(Message);
 			break;
 		case MessageType::REP:
-			if(UserCount>=2) GetReplicationData(Message);
+			
+			if(UserCount>=2)
+			{
+				TLOG_W(TEXT("%d"),Message.length());
+				GetReplicationData(Message);
+			}
 			break;
 		case MessageType::INVALID:
             TLOG_E(TEXT("Unsupported message command."));
@@ -247,6 +260,7 @@ MessageType ClientThread::TranslatePacket(string message)
 	}
 	 temp = message.substr(0, sizeof(":rep ") - 1);
 	if(temp.compare(":rep ")==0)
+	
 	{
 		return MessageType::REP;
 	}
@@ -259,74 +273,74 @@ void ClientThread::AddPlayerList(string list)
 	deserializeStringArray(temp);
 }
 
-Replication ClientThread::deserializeReplication(const std::string& data)
+FReplication ClientThread::deserializeReplication(const std::string& data)
 {
-	Replication rep;
+	FReplication replication;
+	std::stringstream ss(data);
 
-	// Pos를 역직렬화
-	std::memcpy(&rep.Pos, data.data(), sizeof(rep.Pos));
+	// PosX, PosY, PosZ, RotZ를 문자열에서 읽어오기
+	ss >> replication.PosX >> replication.PosY >> replication.PosZ >> replication.RotZ;
 
-	// Rot를 역직렬화
-	std::memcpy(&rep.Rot, data.data() + sizeof(rep.Pos), sizeof(rep.Rot));
+	// State 열거체 값을 int로 읽어와 다시 열거체 값으로 변환
+	int stateValue;
+	ss >> stateValue;
+	replication.state = static_cast<State>(stateValue);
 
-	// state를 역직렬화 (명시적으로 정수형으로 캐스팅)
-	std::uint8_t stateValue;
-	std::memcpy(&stateValue, data.data() + sizeof(rep.Pos) + sizeof(rep.Rot), sizeof(std::uint8_t));
-	rep.state = static_cast<State>(stateValue);
-
-	return rep;
+	return replication;
 }
 
-std::vector<Replication> ClientThread::deserializeReplicationArray(const std::string& data)
+std::vector<FReplication> ClientThread::deserializeReplicationArray(const std::string& data)
 {
-	std::vector<Replication> repArray;
+	std::vector<FReplication> replicationVector;
+	std::stringstream ss(data);
+	std::string line;
 
-	for (std::size_t i = 0; i < data.size(); i += sizeof(repArray[0].Pos) + sizeof(repArray[0].Rot) + sizeof(std::uint8_t)) {
-		// 바이트 스트림에서 각 구조체의 크기만큼 자르고 역직렬화
-		std::string repData = data.substr(i, sizeof(repArray[0].Pos) + sizeof(repArray[0].Rot) + sizeof(std::uint8_t));
-		repArray.push_back(deserializeReplication(repData));
+	while (std::getline(ss, line)) {
+		FReplication replication = deserializeReplication(line); // 각 줄의 문자열을 역직렬화하여 FReplication 객체에 저장
+		replicationVector.push_back(replication);
 	}
 
-	return repArray;
+	return replicationVector;
+}
+
+std::string ClientThread::SerializeReplication(const FReplication& rep)
+{
+	std::stringstream ss;
+
+	// PosX, PosY, PosZ, RotZ를 문자열로 쓰기
+	ss << rep.PosX << ' ' << rep.PosY << ' ' << rep.PosZ << ' ' << rep.RotZ << ' ';
+
+	// State 열거체 값을 int로 변환하여 쓰기
+	ss << static_cast<int>(rep.state);
+
+	return ss.str();
 }
 
 void ClientThread::GetReplicationData(string message)
 {
 
 	string temp = message.substr(sizeof(":rep ") - 1, message.length());
-	std::vector<Replication> restoredArray = deserializeReplicationArray(temp);
+	std::vector<FReplication> restoredVector = deserializeReplicationArray(temp);
 
-
-	TLOG_E(TEXT("%d"),restoredArray.size());
-	for(int i=0;i<restoredArray.size();i++)
-	{
-		TLOG_E(TEXT("%f,%f,%f"),restoredArray[i].Pos[0],restoredArray[i].Pos[1],restoredArray[i].Pos[2]);
-		TLOG_E(TEXT("%f,%f,%f"),restoredArray[i].Rot[0],restoredArray[i].Rot[1],restoredArray[i].Rot[2]);
-
-		switch (restoredArray[i].state)
-		{
-		case State::IDLE:
-			TLOG_E(TEXT("IDLE"));
-			break;
-		case State::WALK:
-			TLOG_E(TEXT("WALK"));
-			break;
-		default:
-			break;
-		}
-
-		TLOG_E(TEXT("////////////"));
-	}
-}
-
-std::string ClientThread::Location2String(FVector location)
-{
-string str=":pos ";
+	TLOG_E(TEXT(" SIZE : %d"),restoredVector.size());
+   for(int i=0;i<restoredVector.size();i++)
+   {
+   	if(i==0)
+   	{
+   		TLOG_E(TEXT("%f, %f, %f"),restoredVector[i].PosX,restoredVector[i].PosY,restoredVector[i].PosZ)
+   		TLOG_E(TEXT("%f, %f, %f"),restoredVector[i].RotZ)
+   	}
+   	if(i==1)
+   	{
+   		TLOG_W(TEXT("%f, %f, %f"),restoredVector[i].PosX,restoredVector[i].PosY,restoredVector[i].PosZ)
+		   TLOG_W(TEXT("%f, %f, %f"),restoredVector[i].RotZ)
+	   }
+   }
 	
-	str+=Cutfloat(location.X)+",";
-	str+=Cutfloat(location.Y)+",";
-	str+=Cutfloat(location.Z);
-	return str; 
+
+	Player->GetInstance()->UpdateUserPos(restoredVector);
+	
+	
 }
 
 string ClientThread::Cutfloat(float value)
