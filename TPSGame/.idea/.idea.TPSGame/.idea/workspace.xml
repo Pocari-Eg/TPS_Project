@@ -9,18 +9,13 @@
   <component name="ChangeListManager">
     <list default="true" id="e02908ce-a5e0-4812-939c-95af19f43050" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.TPSGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.TPSGame/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Level/TestLogin.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Level/TestLogin.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Level/TestMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Level/TestMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/BP_PlayerAnim.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/BP_PlayerAnim.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/Walk_Forward_mixamo_com.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/anim/Walk_Forward_mixamo_com.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerCharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Network/ClientThread.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Network/ClientThread.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Network/LoginManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Network/LoginManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/TPSGameInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/TPSGameInstance.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerAnimInstance.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Network/ClientThread.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Network/ClientThread.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Network/LoginManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Network/LoginManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Network/NetworkBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Network/NetworkBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/TPSGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/TPSGame.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/TPSGameInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/TPSGameInstance.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,7 +202,11 @@
       <workItem from="1706111767760" duration="3433000" />
       <workItem from="1706171096949" duration="6334000" />
       <workItem from="1706197992099" duration="2945000" />
-      <workItem from="1706335804373" duration="7675000" />
+      <workItem from="1706335804373" duration="8371000" />
+      <workItem from="1706449082940" duration="1240000" />
+      <workItem from="1706457203928" duration="252000" />
+      <workItem from="1706457466282" duration="2381000" />
+      <workItem from="1706459968324" duration="2081000" />
     </task>
     <servers />
   </component>

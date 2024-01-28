@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Curves/CurveFloat.h"
 #include "Components/TimelineComponent.h"
+#include "Character/FSM/PlayerFSM.h"
 
 
 #include "PlayerCharacter.generated.h"
@@ -22,8 +23,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* FollowCamera;
 
-	
-	TQueue<FString> NameList;
+	UPROPERTY()
+	UPlayerFSM* FSMInstance;
+
 
 	//TimeLine
 	// Rotation
@@ -47,6 +49,8 @@ private:
 	UPROPERTY()
 	FString NickName;
 
+	TQueue<FString> NameList;
+	
 	FReplication RepliData;
 
 	UPROPERTY()
@@ -105,6 +109,9 @@ private:
 	
 UFUNCTION()
 	void InitRotatingCurve();
+
+	UFUNCTION()
+	void InitFsmInstance();
 	
 public:
 	UFUNCTION()
@@ -124,6 +131,10 @@ public:
 	float Time=10.0f;
 	FReplication GetRepliData(){return  RepliData;}
 	void SetReplidata(const FReplication value){RepliData=value;}
+
+
+	//fsm
+	UPlayerFSM* GetFSMInstance(){return FSMInstance;}
 
 #pragma endregion Function
 };

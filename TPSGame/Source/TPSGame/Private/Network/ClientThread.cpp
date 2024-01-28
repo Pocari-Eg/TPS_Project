@@ -97,7 +97,7 @@ void ClientThread::Send()
 		const float PosZ=PlayerPos.Z;
 		const float RotZ=Player->GetActorRotation().Yaw;
 		
-		FReplication temp = {PosX,PosY,PosZ,RotZ,State::IDLE};
+		FReplication temp = {PosX,PosY,PosZ,RotZ,Player->GetFSMInstance()->GetCurState()};
 		
 		string Replication=":rep "+SerializeReplication(temp);
 
@@ -233,7 +233,6 @@ void ClientThread::PacketManager(string Message)
 			
 			if(UserCount>=2)
 			{
-				TLOG_W(TEXT("%d"),Message.length());
 				GetReplicationData(Message);
 			}
 			break;
@@ -322,19 +321,19 @@ void ClientThread::GetReplicationData(string message)
 	string temp = message.substr(sizeof(":rep ") - 1, message.length());
 	std::vector<FReplication> restoredVector = deserializeReplicationArray(temp);
 
-	TLOG_E(TEXT(" SIZE : %d"),restoredVector.size());
+	//TLOG_E(TEXT(" SIZE : %d"),restoredVector.size());
    for(int i=0;i<restoredVector.size();i++)
    {
-   	if(i==0)
-   	{
-   		TLOG_E(TEXT("%f, %f, %f"),restoredVector[i].PosX,restoredVector[i].PosY,restoredVector[i].PosZ)
-   		TLOG_E(TEXT("%f, %f, %f"),restoredVector[i].RotZ)
-   	}
-   	if(i==1)
-   	{
-   		TLOG_W(TEXT("%f, %f, %f"),restoredVector[i].PosX,restoredVector[i].PosY,restoredVector[i].PosZ)
-		   TLOG_W(TEXT("%f, %f, %f"),restoredVector[i].RotZ)
-	   }
+   	// if(i==0)
+   	// {
+   	// 	TLOG_E(TEXT("%f, %f, %f"),restoredVector[i].PosX,restoredVector[i].PosY,restoredVector[i].PosZ)
+   	// 	TLOG_E(TEXT("%f, %f, %f"),restoredVector[i].RotZ)
+   	// }
+   	// if(i==1)
+   	// {
+   	// 	TLOG_W(TEXT("%f, %f, %f"),restoredVector[i].PosX,restoredVector[i].PosY,restoredVector[i].PosZ)
+		  //  TLOG_W(TEXT("%f, %f, %f"),restoredVector[i].RotZ)
+	   // }
    }
 	
 

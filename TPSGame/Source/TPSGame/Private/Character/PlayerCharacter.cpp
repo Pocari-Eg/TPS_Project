@@ -84,7 +84,7 @@ APlayerCharacter::APlayerCharacter()
     	RotationTimeLine = CreateDefaultSubobject<UTimelineComponent>(TEXT("RotationTimeLine"));
 
 
-	
+	//network
 	RepliData={0.0f,0.0f,72.0f,0.0f,IDLE};
 	
 }
@@ -93,10 +93,16 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	PlayerAnim=Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
-	InitRotatingCurve();
 
+	InitFsmInstance();
+	
+	PlayerAnim=Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+	PlayerAnim->Init(this);
+	PlayerAnim->SetIdleState();
+	
+	InitRotatingCurve();
 	instance=Cast<UTPSGameInstance>(GetGameInstance());
+
 }
 
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -130,7 +136,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 	{
 		PositionSync(DeltaTime);
 	}
-
 }
 
 // Called to bind functionality to input
@@ -258,7 +263,18 @@ void APlayerCharacter::FinishRotation()
 
 void APlayerCharacter::PositionSync(float DeltaTime)
 {
-
+	switch (RepliData.state)
+	{
+	case State::IDLE:
+		TLOG_E(TEXT("IDLE"));
+		PlayerAnim->SetIdleState();
+		break;
+	case State::WALK:
+		TLOG_E(TEXT("WALK"));
+		PlayerAnim->SetWalkState();
+		break;
+		
+	}
 
 	// 현재 위치와 목표 위치를 가져옴
 	FVector CurrentLocation = GetActorLocation();
@@ -273,7 +289,9 @@ void APlayerCharacter::PositionSync(float DeltaTime)
 	// 선형 보간을 사용하여 부드러운 회전
 	FRotator LerpedRotation = FMath::Lerp(CurrentRotation, TargetRotation,Time*DeltaTime);
 
-		
+
+
+	
 	// 부드러운 이동 적용
 	SetActorLocation(LerpedLocation);
 	// 부드러운 회전 적용
@@ -295,6 +313,14 @@ void APlayerCharacter::InitRotatingCurve()
 	RotationTimeLine->SetTimelineLength(Max);
 }
 
+void APlayerCharacter::InitFsmInstance()
+{
+	
+	FSMInstance = NewObject<UPlayerFSM>();
+	FSMInstance->SetPlayer(this);
+	FSMInstance->ChangeState(UIdleState::GetInstance());
+}
+
 void APlayerCharacter::SetPlayerCharacter(const FString&  name)
 {
 	NickName=name;
@@ -305,6 +331,8 @@ void APlayerCharacter::SetPlayerCharacter(const FString&  name)
 	
 	
 	bIsPlayer = true;
+
+	PlayerAnim->SetPlayer();
 }
 
 
