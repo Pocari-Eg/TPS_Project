@@ -7,13 +7,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e02908ce-a5e0-4812-939c-95af19f43050" name="변경" comment="">
+    <list default="true" id="0b0f9d7f-7259-4929-927d-8b87b482c4f8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.TPSGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.TPSGame/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Characters/BP_PlayerAnim.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/BP_PlayerAnim.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/Walk_Forward_mixamo_com.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/anim/Walk_Forward_mixamo_com.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/BP_PlayerCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/BP_PlayerCharacter.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/Mesh/Rifle_Idle_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/Mesh/Rifle_Idle_Skeleton.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/Montage/Rifle_Idle_Montage.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/Montage/Walk_Forward_Montage.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/Rifle_Idle_Anim_mixamo_com.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/Walk_Forward_mixamo_com.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Level/TestMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Level/TestMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/StarterContent/Blueprints/Blueprint_CeilingLight.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/StarterContent/Blueprints/Blueprint_CeilingLight.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/StarterContent/HDRI/HDRI_Epic_Courtyard_Daylight.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/StarterContent/HDRI/HDRI_Epic_Courtyard_Daylight.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Widget/BP_JoinWidget.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Widget/BP_LoginWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Widget/BP_LoginWidget.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Widget/BP_TestLogin.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Widget/BP_TestLogin.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerAnimInstance.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Network/ClientThread.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Network/ClientThread.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerAnimInstance.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerCharacter.h" afterDir="false" />
     </list>
@@ -26,69 +36,13 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="cidr-memory-view://1" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../../../../Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/include/sstream" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../../../../Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/include/xstring" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/ThirdParty/Boost/include/boost/asio/detail/handler_work.hpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/ThirdParty/Boost/include/boost/asio/detail/impl/win_iocp_io_context.ipp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/ThirdParty/Boost/include/boost/asio/detail/win_iocp_io_context.hpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/ThirdParty/Boost/include/boost/asio/detail/win_iocp_socket_connect_op.hpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/ThirdParty/Boost/include/boost/asio/detail/win_iocp_socket_recv_op.hpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/ThirdParty/Boost/include/boost/asio/detail/win_iocp_socket_send_op.hpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/ThirdParty/Boost/include/boost/bind/mem_fn_template.hpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files (x86)/Windows Kits/10/Include/10.0.18362.0/um/winnt.h" root0="SKIP_HIGHLIGHTING" />
   </component>
-  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 6
 }</component>
-  <component name="ProjectId" id="2aoKSUQiqYMY1EPEKEdYtOtMKH7" />
+  <component name="ProjectId" id="2bfqhbdYd7LzsUBVguUakBuss56" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -180,57 +134,21 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
-      <changelist id="e02908ce-a5e0-4812-939c-95af19f43050" name="변경" comment="" />
-      <created>1704979493211</created>
+      <changelist id="0b0f9d7f-7259-4929-927d-8b87b482c4f8" name="변경" comment="" />
+      <created>1706616602457</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1704979493211</updated>
-      <workItem from="1704979494548" duration="6797000" />
-      <workItem from="1705068762170" duration="5091000" />
-      <workItem from="1705154686309" duration="5064000" />
-      <workItem from="1705232295725" duration="8006000" />
-      <workItem from="1705299418588" duration="4188000" />
-      <workItem from="1705304256401" duration="308000" />
-      <workItem from="1705331527356" duration="837000" />
-      <workItem from="1705410521961" duration="4875000" />
-      <workItem from="1705421019429" duration="1654000" />
-      <workItem from="1705574277376" duration="6219000" />
-      <workItem from="1705924411982" duration="8260000" />
-      <workItem from="1706013517862" duration="4677000" />
-      <workItem from="1706093171682" duration="1223000" />
-      <workItem from="1706095014867" duration="3476000" />
-      <workItem from="1706111767760" duration="3433000" />
-      <workItem from="1706171096949" duration="6334000" />
-      <workItem from="1706197992099" duration="2945000" />
-      <workItem from="1706335804373" duration="8371000" />
-      <workItem from="1706449082940" duration="1240000" />
-      <workItem from="1706457203928" duration="252000" />
-      <workItem from="1706457466282" duration="2381000" />
-      <workItem from="1706459968324" duration="2081000" />
+      <updated>1706616602457</updated>
+      <workItem from="1706616604451" duration="244000" />
+      <workItem from="1706617539999" duration="5312000" />
+      <workItem from="1706699565883" duration="6618000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/TPSGame/Private/Network/ClientThread.cpp</url>
-          <line>233</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-    <watches-manager>
-      <configuration name="CppProject">
-        <watch expression="LOG_Static" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

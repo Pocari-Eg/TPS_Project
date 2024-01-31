@@ -15,6 +15,11 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
+#include "Blueprint/UserWidget.h"
+
+#include "Widget/PlayerHud.h"
+
+#include "Character/weapon/WeaponComponent.h"
 #include "Network/ClientThread.h"
 
 // Sets default values
@@ -53,13 +58,14 @@ APlayerCharacter::APlayerCharacter()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 120.0f; // The camera follows at this distance behind the character	
+	CameraBoom->TargetArmLength = 110.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-	CameraBoom->SetRelativeLocation(FVector(0.0f, 20.0f, 49.0f));
+	CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetRelativeLocation(FVector(0.0f,27.0f,70.0f));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 	FollowCamera->SetFieldOfView(105.0f);
@@ -73,6 +79,22 @@ APlayerCharacter::APlayerCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->RotationRate=FRotator(0.f,360.f,0.f);
 
+
+	Weapon = CreateDefaultSubobject<UWeaponComponent>(TEXT("PlayerWeapon"));
+	FName WeaponSocket(TEXT("RHandSocket"));
+	if (GetMesh()->DoesSocketExist(WeaponSocket)) {
+		const ConstructorHelpers::FObjectFinder<USkeletalMesh>WeaponMesh(TEXT("SkeletalMesh'/Game/models/weapon/m4a1/ar_style_gun.ar_style_gun_ar15'"));
+		if (WeaponMesh.Succeeded())
+		{
+			Weapon->SetIdleGrip();
+			Weapon->MeshComponent->SetSkeletalMesh(WeaponMesh.Object);
+		
+		}
+
+		Weapon->MeshComponent->SetRelativeScale3D(FVector(0.115f, 0.115f, 0.115f));
+		Weapon->MeshComponent->SetupAttachment(GetMesh(), WeaponSocket);
+	}
+	
 	//curve
     	const ConstructorHelpers::FObjectFinder<UCurveFloat>RotationCurveData(TEXT("/Script/Engine.CurveFloat'/Game/data/RotatingCurve.RotatingCurve'"));
     	if (RotationCurveData.Succeeded())
@@ -86,6 +108,16 @@ APlayerCharacter::APlayerCharacter()
 
 	//network
 	RepliData={0.0f,0.0f,72.0f,0.0f,IDLE};
+
+	//widget
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetBP(TEXT("/WidgetBlueprint'/Game/Widget/HUD/BP_PlayerHUD.BP_PlayerHUD_C'"));
+	if (WidgetBP.Succeeded()) {
+
+		PlayerWidgetBP = WidgetBP.Class;
+	}
+
+	LimitAngle = 55.0f;
+	CameraSpeed = 10.0f;
 	
 }
 
@@ -102,7 +134,13 @@ void APlayerCharacter::BeginPlay()
 	
 	InitRotatingCurve();
 	instance=Cast<UTPSGameInstance>(GetGameInstance());
+	Weapon->bindPlayer(this);
 
+	if (PlayerWidgetBP != nullptr)
+	{
+		PlayerHud =Cast<UPlayerHud>(CreateWidget<UPlayerHud>(GetWorld(), PlayerWidgetBP));
+		PlayerHud->AddToViewport();
+	}
 }
 
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -200,7 +238,18 @@ void APlayerCharacter::HeadFollowing()
 		}
 	}
 	//머리 회전 값 전달
-	PlayerAnim->SetHeadRotator(Rot.Rotator());
+
+	FRotator vertical=Rot.Rotator();
+	vertical.Yaw=0.0f;
+	vertical.Roll=0.0f;
+	vertical.Normalize();
+	PlayerAnim->SetverticalRotator(vertical);
+	
+	FRotator horizontal=Rot.Rotator();
+	horizontal.Pitch=0.0f;
+	horizontal.Roll=0.0f;
+	horizontal.Normalize();
+	PlayerAnim->SethorizontalRotator((horizontal));
 	
 	float Degree =CalcDegree(PlayerV,CameraV);
 	//한변에 하체 및 플레이어의 방향을 회전
@@ -258,6 +307,8 @@ void APlayerCharacter::Rotating(float Value)
 
 void APlayerCharacter::FinishRotation()
 {
+	PlayerAnim->SethorizontalRotator((FRotator::ZeroRotator));
+	PlayerAnim->SetverticalRotator((FRotator::ZeroRotator));
 	PrevRotation = 0.0f;
 }
 
@@ -333,6 +384,11 @@ void APlayerCharacter::SetPlayerCharacter(const FString&  name)
 	bIsPlayer = true;
 
 	PlayerAnim->SetPlayer();
+}
+
+void APlayerCharacter::FIRE()
+{
+	Weapon->Fire(FollowCamera,CameraBoom);
 }
 
 

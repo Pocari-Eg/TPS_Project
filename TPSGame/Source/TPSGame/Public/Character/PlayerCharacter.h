@@ -22,11 +22,22 @@ private:
 		class USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* FollowCamera;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon, meta = (AllowPrivateAccess = "true"))
+	class UWeaponComponent* Weapon;
 
+	//fsm
 	UPROPERTY()
 	UPlayerFSM* FSMInstance;
 
 
+	//widget
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UUserWidget> PlayerWidgetBP;
+public:
+	UPROPERTY(BlueprintReadWrite)
+	class UPlayerHud* PlayerHud;
+
+	
 	//TimeLine
 	// Rotation
     UPROPERTY()
@@ -120,21 +131,26 @@ public:
 	UFUNCTION()
 	UTPSGameInstance* GetInstance(){return instance;}
 	
+	FReplication GetRepliData(){return  RepliData;}
+	void SetReplidata(const FReplication value){RepliData=value;}
+
+	//fsm
+	UPlayerFSM* GetFSMInstance(){return FSMInstance;}
+
+	//weapon
+	class UWeaponComponent* GetWeapon(){return Weapon;}
+
+UFUNCTION(BlueprintCallable)
+	void FIRE();
+#pragma endregion Function
+	
 	//debug
 	UPROPERTY(EditAnywhere,Category="DEBUG")
 	float CameraSpeed;
 	UPROPERTY(EditAnywhere,Category="DEBUG")
 	bool bIsDebug=true;
 	UPROPERTY(EditAnywhere,Category="DEBUG")
-	 float LimitAngle=90.0f;
+	float LimitAngle=90.0f;
 	UPROPERTY(EditAnywhere,Category="DEBUG")
 	float Time=10.0f;
-	FReplication GetRepliData(){return  RepliData;}
-	void SetReplidata(const FReplication value){RepliData=value;}
-
-
-	//fsm
-	UPlayerFSM* GetFSMInstance(){return FSMInstance;}
-
-#pragma endregion Function
 };

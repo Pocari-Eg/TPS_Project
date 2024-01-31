@@ -29,8 +29,10 @@ private:
 	
 public:
 	UPROPERTY(BlueprintReadOnly)
-	FRotator HeadRotater;
-
+	FRotator verticalRotater;
+	UPROPERTY(BlueprintReadOnly)
+	FRotator horizontalRotater;
+	
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsWalk;
 	UPROPERTY(BlueprintReadWrite)
@@ -49,10 +51,15 @@ public:
 	void SetIdleState();
 	
 	UFUNCTION(BlueprintCallable)
-	void SetHeadRotator(FRotator value){HeadRotater=value;}
+	void SetverticalRotator(FRotator value){verticalRotater=value;}
 	UFUNCTION(BlueprintCallable)
-	FRotator GetHeadRotator(){return HeadRotater;}
+	FRotator GetverticalRotator(){return verticalRotater;}
 
+	UFUNCTION(BlueprintCallable)
+	void SethorizontalRotator(FRotator value){horizontalRotater=value;}
+	UFUNCTION(BlueprintCallable)
+	FRotator GethorizontalRotator(){return horizontalRotater;}
+	
 	UFUNCTION()
 	bool GetbIsWalk(){return bIsWalk;}
 };
