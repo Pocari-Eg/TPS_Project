@@ -63,6 +63,7 @@ public:
 	void StopThreads();
 	//send
 	void Send();
+	void Send(string Data);
 	void SendHandle(const boost::system::error_code& ec);
     //recv
 	void Recieve();

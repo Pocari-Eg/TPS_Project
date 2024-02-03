@@ -30,3 +30,8 @@ struct FReplication {
 	float RotZ;
 	State state;
 };
+
+struct FHitData {
+    int index;
+	int Damage;
+};

@@ -18,10 +18,10 @@ UTPSGameInstance::UTPSGameInstance()
 
 void UTPSGameInstance::SpawnPlayer()
 {
-    APlayerCharacter*  player =	GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,75.0f),FRotator::ZeroRotator);
-	player->SetPlayerCharacter(GetNickName());
-	PlayerList.Add(GetNickName(),player);
-	GetWorld()->GetFirstPlayerController()->Possess(player);
+    Player =	GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,75.0f),FRotator::ZeroRotator);
+	Player->SetPlayerCharacter(GetNickName());
+	PlayerList.Add(GetNickName(),Player);
+	GetWorld()->GetFirstPlayerController()->Possess(Player);
 
 }
 
@@ -30,14 +30,14 @@ void UTPSGameInstance::AddPlayUser(const FString& name)
 	
 	if(name!=m_NickName||!AlreadyInList(name))
 	{
-		 APlayerCharacter* NewPlayer=GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,75.0f),FRotator::ZeroRotator);
+		FActorSpawnParameters Parameters;
+		Parameters.SpawnCollisionHandlingOverride=ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		 APlayerCharacter* NewPlayer=GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,77.0f),FRotator::ZeroRotator,Parameters);
+		NewPlayer->NickName=name;
 		 PlayerList.Add(name,NewPlayer);
-		 SortPlayerList();
-		 TLOG_E(TEXT("%s Player In Game "),*name);
+		 TLOG_W(TEXT("%s Player In Game "),*name);
 	}
-
-
-
+	
 }
 
 const TMap<FString,APlayerCharacter*>& UTPSGameInstance::GetPlayerList()
@@ -62,6 +62,20 @@ void UTPSGameInstance::SortPlayerList()
 	{
 		return A<B;
 	});
+	PlayerIndex.Reset();
+
+	int index=0;
+	for(auto it =PlayerList.begin();it!=PlayerList.end();++it)
+	{
+		PlayerIndex.Add(*it->Key,index);
+		index++;
+	}
+
+
+	for(auto it=PlayerIndex.begin();it!=PlayerIndex.end();++it)
+	{
+		TLOG_W(TEXT("%s : %d"),*it->Key,it->Value);
+	}
 }
 
 void UTPSGameInstance::UpdateUserPos(const std::vector<FReplication>& data)
@@ -73,9 +87,14 @@ void UTPSGameInstance::UpdateUserPos(const std::vector<FReplication>& data)
 		 if(it!=PlayerList.end()) ++it;
 
 	}
-	
 }
 
+
+int32 UTPSGameInstance::GetPlayerIndex(FString name)
+{
+	//PlayerList.Find(name);
+	return 0;
+}
 
 const int32 UTPSGameInstance::GetUserCount()
 {

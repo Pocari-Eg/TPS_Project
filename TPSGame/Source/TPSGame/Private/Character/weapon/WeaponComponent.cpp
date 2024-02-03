@@ -8,6 +8,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "GameFramework/Actor.h"
 #include "Character/PlayerCharacter.h"
+#include "Character/weapon/Bullet.h"
 #include "GameFramework/Character.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -20,6 +21,14 @@ UWeaponComponent::UWeaponComponent(const FObjectInitializer& ObjectInitializer):
 	PrimaryComponentTick.bCanEverTick = true;
 	MeshComponent= CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	// ...
+
+
+	ConstructorHelpers::FClassFinder<ABullet>bulletClass(TEXT("Blueprint'/Game/Object/Weapon/BP_Bullet.BP_Bullet_C'"));
+	if(IsValid(bulletClass.Class))
+	{
+		ffsBullet=bulletClass.Class;
+	}
+	
 }
 
 
@@ -68,9 +77,8 @@ void UWeaponComponent::SetWalkGrip()
 
 void UWeaponComponent::Fire(class UCameraComponent* Camera,class USpringArmComponent* SpringArm)
 {
-
-
-	TLOG_E(TEXT("FIRE"));
+	
+	/*
 	FHitResult HitResult;
 	FVector Start=	Camera->GetComponentLocation();
 	FVector end=Start+(Camera->GetForwardVector()*(SpringArm->TargetArmLength+Range));
@@ -100,7 +108,15 @@ void UWeaponComponent::Fire(class UCameraComponent* Camera,class USpringArmCompo
 		);
 		TLOG_E(TEXT("EMPTY"));
 	}
+*/
 
+
+	FVector CameraPos=	Camera->GetComponentLocation();
+	FVector ShootPos=CameraPos+(Camera->GetForwardVector()*(SpringArm->TargetArmLength+100.0f));
+	FVector direction=Camera->GetForwardVector();
+	direction.Normalize();
+	auto bullet = GetWorld()->SpawnActor<ABullet>(ffsBullet,ShootPos,Camera->GetComponentRotation());
+	bullet->Shoot();
 }
 
 

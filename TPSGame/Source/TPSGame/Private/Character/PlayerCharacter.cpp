@@ -44,7 +44,7 @@ APlayerCharacter::APlayerCharacter()
 			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
 	}
 
-
+    GetCapsuleComponent()->SetCollisionProfileName("Character");
 	
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
@@ -125,22 +125,11 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 	InitFsmInstance();
-	
 	PlayerAnim=Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 	PlayerAnim->Init(this);
 	PlayerAnim->SetIdleState();
-	
-	InitRotatingCurve();
 	instance=Cast<UTPSGameInstance>(GetGameInstance());
-	Weapon->bindPlayer(this);
-
-	if (PlayerWidgetBP != nullptr)
-	{
-		PlayerHud =Cast<UPlayerHud>(CreateWidget<UPlayerHud>(GetWorld(), PlayerWidgetBP));
-		PlayerHud->AddToViewport();
-	}
 }
 
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -167,12 +156,24 @@ void APlayerCharacter::Tick(float DeltaTime)
 				FString n;
 				NameList.Dequeue(n);
 				instance->AddPlayUser(n);
+				AddPlayerCount--;
+				if(AddPlayerCount==0)instance->SortPlayerList();
 			}
 		}
 	}
 	else
 	{
 		PositionSync(DeltaTime);
+	}
+
+	if(bIsAutoShoot)
+	{
+		ShootTimer+=DeltaTime;
+		if(ShootTimer>=ShootLimit)
+		{
+			ShootTimer=0.0f;
+			Weapon->Fire(FollowCamera,CameraBoom);
+		}
 	}
 }
 
@@ -185,6 +186,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::Trun);
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::LookUp);
 }
+
 
 void APlayerCharacter::MoveForward(float value)
 {
@@ -317,11 +319,9 @@ void APlayerCharacter::PositionSync(float DeltaTime)
 	switch (RepliData.state)
 	{
 	case State::IDLE:
-		TLOG_E(TEXT("IDLE"));
 		PlayerAnim->SetIdleState();
 		break;
 	case State::WALK:
-		TLOG_E(TEXT("WALK"));
 		PlayerAnim->SetWalkState();
 		break;
 		
@@ -372,6 +372,23 @@ void APlayerCharacter::InitFsmInstance()
 	FSMInstance->ChangeState(UIdleState::GetInstance());
 }
 
+void APlayerCharacter::InitPlayerHud()
+{
+	if (PlayerWidgetBP != nullptr)
+	{
+		PlayerHud =Cast<UPlayerHud>(CreateWidget<UPlayerHud>(GetWorld(), PlayerWidgetBP));
+		PlayerHud->AddToViewport();
+		PlayerHud->BindPlayer(this);
+	}
+}
+
+void APlayerCharacter::InitPlayer()
+{
+	InitPlayerHud();
+	InitRotatingCurve();
+	Weapon->bindPlayer(this);
+}
+
 void APlayerCharacter::SetPlayerCharacter(const FString&  name)
 {
 	NickName=name;
@@ -382,13 +399,26 @@ void APlayerCharacter::SetPlayerCharacter(const FString&  name)
 	
 	
 	bIsPlayer = true;
-
+	InitPlayer();
 	PlayerAnim->SetPlayer();
 }
 
 void APlayerCharacter::FIRE()
 {
-	Weapon->Fire(FollowCamera,CameraBoom);
+	if(bIsPlayer)Weapon->Fire(FollowCamera,CameraBoom);
+}
+
+void APlayerCharacter::Hit(int32 Damage)
+{
+
+	//FHitData data={NickName.,NickName.Len(),Damage};
+	
+   // instance->GetClient()->Send();
+	
+	// HP -= Damage;
+	// if(HP<=0)Destroy();
+	// if(bIsPlayer)OnHpChanged.Broadcast();
+	
 }
 
 

@@ -109,6 +109,11 @@ void ClientThread::Send()
 	ReplicationTimer.async_wait(boost::bind(&ClientThread::Send, this));
 }
 
+void ClientThread::Send(string Data)
+{
+	sock.async_write_some(asio::buffer(Data), bind(&ClientThread::SendHandle, this, _1));
+}
+
 void ClientThread::SendHandle(const boost::system::error_code& ec)
 {
 	if (ec)
@@ -203,6 +208,7 @@ void ClientThread::deserializeStringArray(const std::string& serialized)
 	size_t arraySize;
 	iss >> arraySize;
 
+	Player->SetAddPlayerCount(arraySize);
 	// 각 문자열을 차례대로 읽어와 배열에 추가
 	for (size_t i = 0; i < arraySize; ++i) {
 		size_t strLength;
@@ -211,9 +217,12 @@ void ClientThread::deserializeStringArray(const std::string& serialized)
 		std::string str;
 		iss >> str;
 
-		FString n =str.c_str();
+		FString n = str.c_str();
 		PlayerList->Enqueue(n);
+		
 	}
+	TLOG_W(TEXT("Add Player List"));
+	
 	
 }
 
@@ -320,23 +329,8 @@ void ClientThread::GetReplicationData(string message)
 
 	string temp = message.substr(sizeof(":rep ") - 1, message.length());
 	std::vector<FReplication> restoredVector = deserializeReplicationArray(temp);
-
-	//TLOG_E(TEXT(" SIZE : %d"),restoredVector.size());
-   for(int i=0;i<restoredVector.size();i++)
-   {
-   	// if(i==0)
-   	// {
-   	// 	TLOG_E(TEXT("%f, %f, %f"),restoredVector[i].PosX,restoredVector[i].PosY,restoredVector[i].PosZ)
-   	// 	TLOG_E(TEXT("%f, %f, %f"),restoredVector[i].RotZ)
-   	// }
-   	// if(i==1)
-   	// {
-   	// 	TLOG_W(TEXT("%f, %f, %f"),restoredVector[i].PosX,restoredVector[i].PosY,restoredVector[i].PosZ)
-		  //  TLOG_W(TEXT("%f, %f, %f"),restoredVector[i].RotZ)
-	   // }
-   }
 	
-
+	
 	Player->GetInstance()->UpdateUserPos(restoredVector);
 	
 	

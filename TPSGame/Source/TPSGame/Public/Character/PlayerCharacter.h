@@ -10,7 +10,11 @@
 
 
 #include "PlayerCharacter.generated.h"
+
+DECLARE_MULTICAST_DELEGATE(FOnHpChangedDelegate);
+
 class ClientThread;
+
 UCLASS()
 class TPSGAME_API APlayerCharacter : public ACharacter
 {
@@ -33,6 +37,11 @@ private:
 	//widget
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class UUserWidget> PlayerWidgetBP;
+
+
+	//PlayerData
+	UPROPERTY(VisibleAnywhere, Category = Data, meta = (AllowPrivateAccess = "true"))
+	float HP=100;
 public:
 	UPROPERTY(BlueprintReadWrite)
 	class UPlayerHud* PlayerHud;
@@ -54,18 +63,20 @@ public:
 
 
 	
-                  
 	//network;
 	ClientThread* client;
 	UPROPERTY()
 	FString NickName;
+	int32 AddPlayerCount=0;
 
 	TQueue<FString> NameList;
-	
 	FReplication RepliData;
 
 	UPROPERTY()
 		bool bIsPlayer = false;
+
+	//delegate
+	FOnHpChangedDelegate OnHpChanged;
 protected:
 	class UPlayerAnimInstance* PlayerAnim;
 	class UTPSGameInstance* instance;
@@ -86,7 +97,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// Handles input for moving forward and backward.
-
 private:
 
 	//player move
@@ -123,6 +133,11 @@ UFUNCTION()
 
 	UFUNCTION()
 	void InitFsmInstance();
+	UFUNCTION()
+	void InitPlayerHud();
+
+	void InitPlayer();
+
 	
 public:
 	UFUNCTION()
@@ -134,14 +149,23 @@ public:
 	FReplication GetRepliData(){return  RepliData;}
 	void SetReplidata(const FReplication value){RepliData=value;}
 
+	ClientThread* GetClientThread(){return client;}
 	//fsm
 	UPlayerFSM* GetFSMInstance(){return FSMInstance;}
+
+	void SetAddPlayerCount(int32 value){AddPlayerCount=value;}
 
 	//weapon
 	class UWeaponComponent* GetWeapon(){return Weapon;}
 
+	void SetHP(int32 val){HP=val;}
+	float GetHP(){return HP;}
+
 UFUNCTION(BlueprintCallable)
 	void FIRE();
+
+	UFUNCTION(BlueprintCallable)
+	void Hit(int32 Damage);
 #pragma endregion Function
 	
 	//debug
@@ -153,4 +177,9 @@ UFUNCTION(BlueprintCallable)
 	float LimitAngle=90.0f;
 	UPROPERTY(EditAnywhere,Category="DEBUG")
 	float Time=10.0f;
+	UPROPERTY(EditAnywhere,Category="DEBUG")
+	bool bIsAutoShoot=false;
+	UPROPERTY(EditAnywhere,Category="DEBUG")
+	float ShootLimit=1.0f;
+	float ShootTimer=0.0f;
 };

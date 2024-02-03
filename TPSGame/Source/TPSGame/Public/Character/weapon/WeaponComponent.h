@@ -9,8 +9,8 @@
 #include "WeaponComponent.generated.h"
 
 
-class AActor;
 
+class ABullet;
 UCLASS( ClassGroup=(Weapon), meta=(BlueprintSpawnableComponent) )
 class TPSGAME_API UWeaponComponent : public USceneComponent
 {
@@ -21,7 +21,14 @@ public:
 UPROPERTY(EditAnywhere, blueprintreadwrite, category = data)
 class USkeletalMeshComponent* MeshComponent;
 #pragma endregion Component
-		
+
+#pragma  region Bullet
+
+	//bullet class   f=5, s= 6  ffsbullet =5.56mm 
+	UPROPERTY()
+	TSubclassOf<ABullet> ffsBullet;
+#pragma  endregion Bullet
+	
 #pragma region Data
 public:
 UPROPERTY()
@@ -30,8 +37,7 @@ UPROPERTY()
 public:
 	UPROPERTY(EditAnywhere)
 		int32 Range = 1000;
-	UPROPERTY(EditAnywhere)
-	int32 Damage = 200;
+
 #pragma endregion Data
 		
 	//function
