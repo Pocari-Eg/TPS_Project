@@ -17,8 +17,7 @@ void UPlayerHud::BindPlayer(APlayerCharacter* value)
 void UPlayerHud::UpdateHPWidget()
 {
 	if (Player != nullptr) {
-
-		 TLOG_W(TEXT("UpdateHP"));
+		
 			FText NewText = FText::FromString(FString::FromInt(Player->GetHP()));
 			HPText->SetText(NewText);
 		}

@@ -5,6 +5,8 @@
 #include "Character/PlayerCharacter.h"
 #include "TPSGameInstance.h"
 
+
+
 ClientThread::ClientThread()
 :ep(asio::ip::address::from_string(LOCALHOST_IP),SERVER_PORT),
 sock(ios,ep.protocol()),
@@ -223,7 +225,6 @@ void ClientThread::deserializeStringArray(const std::string& serialized)
 	}
 	TLOG_W(TEXT("Add Player List"));
 	
-	
 }
 
 void ClientThread::PacketManager(string Message)
@@ -245,6 +246,13 @@ void ClientThread::PacketManager(string Message)
 				GetReplicationData(Message);
 			}
 			break;
+
+		case MessageType::HIT:
+			PlayerHitUpdate(Message);
+			break;
+		case MessageType::EXIT:
+			DeletePlayer(Message);
+			break;
 		case MessageType::INVALID:
             TLOG_E(TEXT("Unsupported message command."));
 			break;
@@ -261,16 +269,32 @@ void ClientThread::PacketManager(string Message)
 
 MessageType ClientThread::TranslatePacket(string message)
 {
+
+	//add
 	string temp = message.substr(0, sizeof(":add ") - 1);
 	if (temp.compare(":add ") == 0)
 	{
 		return MessageType::ADD;
 	}
+	//rep
 	 temp = message.substr(0, sizeof(":rep ") - 1);
 	if(temp.compare(":rep ")==0)
-	
 	{
 		return MessageType::REP;
+	}
+	//hit
+	temp = message.substr(0, sizeof(":hit ") - 1);
+	if(temp.compare(":hit ")==0)
+	
+	{
+		return MessageType::HIT;
+	}
+
+	//death
+	temp = message.substr(0, sizeof(":exit ") - 1);
+	if(temp.compare(":exit ")==0)
+	{
+		return MessageType::EXIT;
 	}
 	return MessageType::INVALID;
 }
@@ -279,6 +303,14 @@ void ClientThread::AddPlayerList(string list)
 {
 	string temp = list.substr(sizeof(":add ") - 1, list.length());
 	deserializeStringArray(temp);
+}
+
+void ClientThread::DeletePlayer(string data)
+{
+	string temp = data.substr(sizeof(":exit ") - 1, data.length());
+
+	FString name =temp.c_str();
+	Player->GetInstance()->DeletePlayer(name);
 }
 
 FReplication ClientThread::deserializeReplication(const std::string& data)
@@ -336,10 +368,19 @@ void ClientThread::GetReplicationData(string message)
 	
 }
 
+void ClientThread::PlayerHitUpdate(string message)
+{
+
+	string temp = message.substr(sizeof(":hit ") - 1, message.length());
+	
+	// 메시지 큐나 델리게이트를 통해 메인 스레드로 메시지 전달
+	FString UEMessage=temp.c_str();
+	TGraphTask<FUpdateUITask>::CreateTask(nullptr).ConstructAndDispatchWhenReady(Player, UEMessage);	
+}
+
 string ClientThread::Cutfloat(float value)
 {
 	std::string stringNumber = std::to_string(value);
-    
 	// 찾아낸 소수점의 위치
 	size_t dotPosition = stringNumber.find('.');
     
@@ -350,3 +391,19 @@ string ClientThread::Cutfloat(float value)
 
 	return stringNumber;
 }
+
+FUpdateUITask::FUpdateUITask(APlayerCharacter* InPlayer, const FString& InMessage)
+{
+	Player=InPlayer;
+	Message=InMessage;
+}
+
+void FUpdateUITask::DoTask(ENamedThreads::Type CurrentThread, const FGraphEventRef& MyCompletionGraphEvent)
+{
+	// 메인 스레드에서 UI 업데이트 호출
+	if (Player.IsValid())
+	{
+		Player->UpdateUIOnMainThread(Message);
+	}
+}
+

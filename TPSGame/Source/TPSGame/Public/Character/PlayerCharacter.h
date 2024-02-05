@@ -86,6 +86,8 @@ public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
 
+	
+	void UpdateUIOnMainThread(const FString& Message);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -96,7 +98,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	// Handles input for moving forward and backward.
+
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 private:
 
 	//player move
@@ -148,7 +151,6 @@ public:
 	
 	FReplication GetRepliData(){return  RepliData;}
 	void SetReplidata(const FReplication value){RepliData=value;}
-
 	ClientThread* GetClientThread(){return client;}
 	//fsm
 	UPlayerFSM* GetFSMInstance(){return FSMInstance;}

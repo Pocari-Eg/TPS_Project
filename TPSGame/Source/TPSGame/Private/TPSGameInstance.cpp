@@ -5,6 +5,7 @@
 
 #include "ShaderPrintParameters.h"
 #include  "Character/PlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 UTPSGameInstance::UTPSGameInstance()
 {
@@ -45,6 +46,32 @@ const TMap<FString,APlayerCharacter*>& UTPSGameInstance::GetPlayerList()
 	return PlayerList;
 }
 
+void UTPSGameInstance::DeletePlayer(FString name)
+{
+	// APlayerCharacter* DeathPlayer = *PlayerList.Find(name);
+	//
+	// if (DeathPlayer)
+	// {
+	// 	// 맵에서 플레이어 제거
+	// 	PlayerList.Remove(name);
+	// 	// 플레이어 제거
+	// 	DeathPlayer->Destroy();
+	// }
+	// SortPlayerList();
+}
+
+void UTPSGameInstance::OutGame()
+{
+	// for(auto it =PlayerList.begin();it!=PlayerList.end();++it)
+	// {
+	// 	it->Value->Destroy();
+	//
+	// }
+	// PlayerList.Reset();
+	// PlayerIndex.Reset();
+	// UGameplayStatics::OpenLevel(this,"TestLogin");
+}
+
 bool UTPSGameInstance::AlreadyInList(FString name)
 {
 	if(PlayerList.IsEmpty())
@@ -70,12 +97,6 @@ void UTPSGameInstance::SortPlayerList()
 		PlayerIndex.Add(*it->Key,index);
 		index++;
 	}
-
-
-	for(auto it=PlayerIndex.begin();it!=PlayerIndex.end();++it)
-	{
-		TLOG_W(TEXT("%s : %d"),*it->Key,it->Value);
-	}
 }
 
 void UTPSGameInstance::UpdateUserPos(const std::vector<FReplication>& data)
@@ -92,8 +113,8 @@ void UTPSGameInstance::UpdateUserPos(const std::vector<FReplication>& data)
 
 int32 UTPSGameInstance::GetPlayerIndex(FString name)
 {
-	//PlayerList.Find(name);
-	return 0;
+	int32 i =*PlayerIndex.Find(name);
+	return i;
 }
 
 const int32 UTPSGameInstance::GetUserCount()

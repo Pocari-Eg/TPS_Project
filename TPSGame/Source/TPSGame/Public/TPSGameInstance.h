@@ -51,7 +51,7 @@ public:
 	void AddPlayUser(const FString& name);
 	const TMap<FString,APlayerCharacter*>& GetPlayerList();
 
-	
+	void DeletePlayer(FString name);
 	
 	void SortPlayerList();
 
@@ -63,6 +63,12 @@ public:
 	UFUNCTION()
 	const int32 GetUserCount();
 
+
+	void TakePlayerdamage(int32 index,int32 damage);
+
+	
+   UFUNCTION()
+	void OutGame();
 private:
 	bool AlreadyInList(FString name);
 };

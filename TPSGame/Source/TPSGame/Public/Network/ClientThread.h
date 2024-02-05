@@ -5,16 +5,17 @@
 #include "TPSGame.h"
 #include "NetworkBase.h"
 
-
+#include "Async/AsyncWork.h"
 #include "HAL/Runnable.h"
 #include "HAL/RunnableThread.h"
 /**
  * 
  */
 
-enum MessageType {INVALID,ADD,REP };
+enum MessageType {INVALID,ADD,REP,HIT,EXIT };
  class APlayerCharacter;
 class UTPSGameInstance;
+
 class TPSGAME_API ClientThread : public FRunnable
 {
 #pragma region var
@@ -81,6 +82,7 @@ void OnConnect(const boost::system::error_code& ec);
 	MessageType  TranslatePacket(string message);
 	
 	void AddPlayerList(string list);
+	void DeletePlayer(string data);
 
 	//리플리케이션
 	FReplication deserializeReplication(const std::string& data);
@@ -90,8 +92,38 @@ void OnConnect(const boost::system::error_code& ec);
 	
 	void GetReplicationData(string message);
 
-
+	void PlayerHitUpdate(string message);
 private:
 	string Cutfloat(float value);
 #pragma endregion func
+};
+
+
+
+
+
+class FUpdateUITask: public FNonAbandonableTask
+{
+public:
+	FUpdateUITask(APlayerCharacter* InPlayer, const FString& InMessage);
+	void DoTask(ENamedThreads::Type CurrentThread, const FGraphEventRef& MyCompletionGraphEvent);
+	static TStatId GetStatId()
+	{
+		RETURN_QUICK_DECLARE_CYCLE_STAT(FUpdateUITask, STATGROUP_ThreadPoolAsyncTasks);
+	}
+
+	// 수정된 부분
+	ENamedThreads::Type GetDesiredThread()
+	{
+		return ENamedThreads::GameThread;
+	}
+
+	// 수정된 부분
+	static ESubsequentsMode::Type GetSubsequentsMode()
+	{
+		return ESubsequentsMode::TrackSubsequents;
+	}
+private:
+	TWeakObjectPtr<APlayerCharacter> Player;
+	FString Message;
 };

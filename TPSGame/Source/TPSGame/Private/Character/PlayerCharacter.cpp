@@ -18,7 +18,7 @@
 #include "Blueprint/UserWidget.h"
 
 #include "Widget/PlayerHud.h"
-
+#include "Engine/DamageEvents.h"
 #include "Character/weapon/WeaponComponent.h"
 #include "Network/ClientThread.h"
 
@@ -121,6 +121,14 @@ APlayerCharacter::APlayerCharacter()
 	
 }
 
+void APlayerCharacter::UpdateUIOnMainThread(const FString& Message)
+{
+	// 메인 스레드에서 TakeDamage 호출
+	float DamageAmount = FCString::Atof(*Message);
+	FDamageEvent DamageEvent;
+	TakeDamage(DamageAmount, DamageEvent, nullptr, nullptr);
+}
+
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
@@ -185,6 +193,35 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::Trun);
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::LookUp);
+}
+
+float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	float Damage=DamageAmount;
+
+	// 피해 계산 및 적용
+
+
+	// 사망 여부 확인
+	 if(HP - Damage<=0)
+	 {
+		 HP=0.0f;
+	 	client->Stop();
+       // instance->OutGame();
+	 	
+	 }
+	else
+	{
+		HP -= Damage;
+	}
+	 if(bIsPlayer)OnHpChanged.Broadcast();
+
+
+
+	return DamageAmount;
 }
 
 
@@ -410,14 +447,11 @@ void APlayerCharacter::FIRE()
 
 void APlayerCharacter::Hit(int32 Damage)
 {
-
-	//FHitData data={NickName.,NickName.Len(),Damage};
+	std::string index =TCHAR_TO_UTF8(*FString::FromInt(instance->GetPlayerIndex(NickName)));
+	std::string damage=TCHAR_TO_UTF8(*FString::FromInt(Damage));
+	std::string data=":hit "+index+","+damage;
 	
-   // instance->GetClient()->Send();
-	
-	// HP -= Damage;
-	// if(HP<=0)Destroy();
-	// if(bIsPlayer)OnHpChanged.Broadcast();
+    instance->GetClient()->Send(data);
 	
 }
 
