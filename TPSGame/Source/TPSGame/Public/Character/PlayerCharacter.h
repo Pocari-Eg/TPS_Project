@@ -67,9 +67,6 @@ public:
 	ClientThread* client;
 	UPROPERTY()
 	FString NickName;
-	int32 AddPlayerCount=0;
-
-	TQueue<FString> NameList;
 	FReplication RepliData;
 
 	UPROPERTY()
@@ -150,15 +147,14 @@ public:
 	UTPSGameInstance* GetInstance(){return instance;}
 	
 	FReplication GetRepliData(){return  RepliData;}
-	void SetReplidata(const FReplication value){RepliData=value;}
-	ClientThread* GetClientThread(){return client;}
+	void SetReplidata(const FReplication value);
+	 ClientThread* GetClientThread(){return client;}
 	//fsm
-	UPlayerFSM* GetFSMInstance(){return FSMInstance;}
-
-	void SetAddPlayerCount(int32 value){AddPlayerCount=value;}
+	 UPlayerFSM* GetFSMInstance(){return FSMInstance;}
+	
 
 	//weapon
-	class UWeaponComponent* GetWeapon(){return Weapon;}
+	 class UWeaponComponent* GetWeapon(){return Weapon;}
 
 	void SetHP(int32 val){HP=val;}
 	float GetHP(){return HP;}
@@ -168,6 +164,10 @@ UFUNCTION(BlueprintCallable)
 
 	UFUNCTION(BlueprintCallable)
 	void Hit(int32 Damage);
+
+//network
+
+	
 #pragma endregion Function
 	
 	//debug

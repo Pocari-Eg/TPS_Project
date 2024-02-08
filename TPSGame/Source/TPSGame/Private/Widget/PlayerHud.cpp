@@ -2,6 +2,7 @@
 
 
 #include "Widget/PlayerHud.h"
+
 #include "Character/PlayerCharacter.h"
 #include "Components/TextBlock.h"
 
@@ -14,6 +15,16 @@ void UPlayerHud::BindPlayer(APlayerCharacter* value)
 	Player->OnHpChanged.AddUObject(this, &UPlayerHud::UpdateHPWidget);
 	UpdateHPWidget();
 }
+
+void UPlayerHud::OpenDeathWidget()
+{
+
+	GetWorld()->GetFirstPlayerController()->bShowMouseCursor=true;
+
+	GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeUIOnly());
+	DeathWidget->SetVisibility(ESlateVisibility::Visible);
+}
+
 void UPlayerHud::UpdateHPWidget()
 {
 	if (Player != nullptr) {
@@ -29,4 +40,5 @@ void UPlayerHud::NativeConstruct()
 	UE_LOG(LogTemp, Warning, TEXT("PlayerHudInit"));
 
 	HPText =Cast<UTextBlock>(GetWidgetFromName(TEXT("HPVal")));
+	DeathWidget=Cast<UUserWidget>(GetWidgetFromName(TEXT("BP_DeathWidget")));
 }

@@ -39,7 +39,6 @@ private:
 	FString NickName;
 
 	APlayerCharacter* Player;
-	TQueue<FString>* PlayerList;
 
 	int32 UserCount;
 
@@ -70,7 +69,7 @@ public:
 	void Recieve();
 	void ReceiveHandle(const boost::system::error_code& ec, size_t size);
 	
-	void BindPlayer(FString value,APlayerCharacter* p,TQueue<FString>* TempList);
+	void BindPlayer(FString value,APlayerCharacter* p);
 
 	//connect
 void TryConnect();
@@ -102,28 +101,3 @@ private:
 
 
 
-class FUpdateUITask: public FNonAbandonableTask
-{
-public:
-	FUpdateUITask(APlayerCharacter* InPlayer, const FString& InMessage);
-	void DoTask(ENamedThreads::Type CurrentThread, const FGraphEventRef& MyCompletionGraphEvent);
-	static TStatId GetStatId()
-	{
-		RETURN_QUICK_DECLARE_CYCLE_STAT(FUpdateUITask, STATGROUP_ThreadPoolAsyncTasks);
-	}
-
-	// 수정된 부분
-	ENamedThreads::Type GetDesiredThread()
-	{
-		return ENamedThreads::GameThread;
-	}
-
-	// 수정된 부분
-	static ESubsequentsMode::Type GetSubsequentsMode()
-	{
-		return ESubsequentsMode::TrackSubsequents;
-	}
-private:
-	TWeakObjectPtr<APlayerCharacter> Player;
-	FString Message;
-};

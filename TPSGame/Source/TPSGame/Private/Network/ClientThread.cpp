@@ -3,6 +3,7 @@
 
 #include "NetWork/ClientThread.h"
 #include "Character/PlayerCharacter.h"
+#include "Network/NetworkTask.h"
 #include "TPSGameInstance.h"
 
 
@@ -163,11 +164,10 @@ void ClientThread::ReceiveHandle(const boost::system::error_code& ec, size_t siz
 	Recieve();
 }
 
-void ClientThread::BindPlayer(FString value, APlayerCharacter* p,TQueue<FString>* TempList)
+void ClientThread::BindPlayer(FString value, APlayerCharacter* p)
 {
 	Player=p;
 	NickName=value;
-	PlayerList=TempList;
 }
 
 
@@ -210,8 +210,9 @@ void ClientThread::deserializeStringArray(const std::string& serialized)
 	size_t arraySize;
 	iss >> arraySize;
 
-	Player->SetAddPlayerCount(arraySize);
+	
 	// 각 문자열을 차례대로 읽어와 배열에 추가
+	TArray<FString> PlayerList;
 	for (size_t i = 0; i < arraySize; ++i) {
 		size_t strLength;
 		iss >> strLength;
@@ -220,10 +221,11 @@ void ClientThread::deserializeStringArray(const std::string& serialized)
 		iss >> str;
 
 		FString n = str.c_str();
-		PlayerList->Enqueue(n);
-		
+		PlayerList.Add(n);
 	}
 	TLOG_W(TEXT("Add Player List"));
+
+	TGraphTask<FAddPlayerTask>::CreateTask(nullptr).ConstructAndDispatchWhenReady(Player->GetInstance(), PlayerList);
 	
 }
 
@@ -310,7 +312,7 @@ void ClientThread::DeletePlayer(string data)
 	string temp = data.substr(sizeof(":exit ") - 1, data.length());
 
 	FString name =temp.c_str();
-	Player->GetInstance()->DeletePlayer(name);
+	TGraphTask<FDeletePlayerTask>::CreateTask(nullptr).ConstructAndDispatchWhenReady(Player->GetInstance(), name);	
 }
 
 FReplication ClientThread::deserializeReplication(const std::string& data)
@@ -390,20 +392,5 @@ string ClientThread::Cutfloat(float value)
 	}
 
 	return stringNumber;
-}
-
-FUpdateUITask::FUpdateUITask(APlayerCharacter* InPlayer, const FString& InMessage)
-{
-	Player=InPlayer;
-	Message=InMessage;
-}
-
-void FUpdateUITask::DoTask(ENamedThreads::Type CurrentThread, const FGraphEventRef& MyCompletionGraphEvent)
-{
-	// 메인 스레드에서 UI 업데이트 호출
-	if (Player.IsValid())
-	{
-		Player->UpdateUIOnMainThread(Message);
-	}
 }
 

@@ -157,17 +157,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	if (PlayerAnim->GetbIsWalk())CameraFollowPlayer();
 	if (bIsPlayer) {
 
-		if (!NameList.IsEmpty())
-		{
-			if (instance != nullptr)
-			{
-				FString n;
-				NameList.Dequeue(n);
-				instance->AddPlayUser(n);
-				AddPlayerCount--;
-				if(AddPlayerCount==0)instance->SortPlayerList();
-			}
-		}
+		
 	}
 	else
 	{
@@ -210,8 +200,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	 {
 		 HP=0.0f;
 	 	client->Stop();
-       // instance->OutGame();
-	 	
+        PlayerHud->OpenDeathWidget();
 	 }
 	else
 	{
@@ -431,13 +420,18 @@ void APlayerCharacter::SetPlayerCharacter(const FString&  name)
 	NickName=name;
 	TLOG_E(TEXT("SetPlayerCharacter"));
 	client = new ClientThread();
-	client->BindPlayer(NickName,this,&NameList);
+	client->BindPlayer(NickName,this);
 	client->StartThreads();
 	
 	
 	bIsPlayer = true;
 	InitPlayer();
 	PlayerAnim->SetPlayer();
+}
+
+void APlayerCharacter::SetReplidata(const FReplication value)
+{
+	RepliData=value;
 }
 
 void APlayerCharacter::FIRE()
@@ -454,5 +448,6 @@ void APlayerCharacter::Hit(int32 Damage)
     instance->GetClient()->Send(data);
 	
 }
+
 
 

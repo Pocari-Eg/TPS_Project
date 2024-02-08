@@ -24,7 +24,6 @@ private:
 	FString m_NickName="Pocari";
 	UPROPERTY()
 	TMap<FString,APlayerCharacter*> PlayerList;
-
 	UPROPERTY()
 	TMap<FString,int32> PlayerIndex;
 	UPROPERTY()
@@ -63,11 +62,10 @@ public:
 	UFUNCTION()
 	const int32 GetUserCount();
 
-
-	void TakePlayerdamage(int32 index,int32 damage);
-
 	
-   UFUNCTION()
+	void AddPlayerInGame(const TArray<FString>& addPlayer);
+	
+   UFUNCTION(BlueprintCallable)
 	void OutGame();
 private:
 	bool AlreadyInList(FString name);

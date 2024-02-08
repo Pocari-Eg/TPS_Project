@@ -48,28 +48,37 @@ const TMap<FString,APlayerCharacter*>& UTPSGameInstance::GetPlayerList()
 
 void UTPSGameInstance::DeletePlayer(FString name)
 {
-	// APlayerCharacter* DeathPlayer = *PlayerList.Find(name);
-	//
-	// if (DeathPlayer)
-	// {
-	// 	// 맵에서 플레이어 제거
-	// 	PlayerList.Remove(name);
-	// 	// 플레이어 제거
-	// 	DeathPlayer->Destroy();
-	// }
-	// SortPlayerList();
+	 APlayerCharacter* DeathPlayer = PlayerList.FindRef(name);
+	
+	if (DeathPlayer)
+	{
+		// 맵에서 플레이어 제거
+		PlayerList.Remove(name);
+		// 플레이어 제거
+		DeathPlayer->Destroy();
+	}
+	SortPlayerList();
+}
+
+void UTPSGameInstance::AddPlayerInGame(const TArray<FString>& addPlayer)
+{
+	
+	if (!addPlayer.IsEmpty())
+	{
+		
+		for(auto it=addPlayer.begin();it!=addPlayer.end();++it)
+		{
+			AddPlayUser(*it);
+		}
+		SortPlayerList();
+	}
 }
 
 void UTPSGameInstance::OutGame()
 {
-	// for(auto it =PlayerList.begin();it!=PlayerList.end();++it)
-	// {
-	// 	it->Value->Destroy();
-	//
-	// }
-	// PlayerList.Reset();
-	// PlayerIndex.Reset();
-	// UGameplayStatics::OpenLevel(this,"TestLogin");
+	PlayerList.Empty();
+	PlayerIndex.Empty();
+	UGameplayStatics::OpenLevel(this,"TestLogin");
 }
 
 bool UTPSGameInstance::AlreadyInList(FString name)
@@ -89,7 +98,7 @@ void UTPSGameInstance::SortPlayerList()
 	{
 		return A<B;
 	});
-	PlayerIndex.Reset();
+	PlayerIndex.Empty();
 
 	int index=0;
 	for(auto it =PlayerList.begin();it!=PlayerList.end();++it)
@@ -104,7 +113,9 @@ void UTPSGameInstance::UpdateUserPos(const std::vector<FReplication>& data)
  auto it = PlayerList.begin();
 	for(int i=0;i<data.size();i++)
 	{
+		if(it->Value!=nullptr&&it->Key!=m_NickName){
 		it->Value->SetReplidata(data[i]);
+			}
 		 if(it!=PlayerList.end()) ++it;
 
 	}

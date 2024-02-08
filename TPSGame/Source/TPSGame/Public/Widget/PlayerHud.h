@@ -24,6 +24,10 @@ private:
 	//widget
 	UPROPERTY()
 	UTextBlock* HPText;
+
+	//widget
+	UPROPERTY()
+	UUserWidget* DeathWidget;
 public:
 
 #pragma  endregion var
@@ -37,7 +41,7 @@ void UpdateHPWidget();
 public:
 
 void BindPlayer(APlayerCharacter* value);
-
+void OpenDeathWidget();
 protected:
 	// 위젯을 초기화
 	virtual void NativeConstruct() override;
