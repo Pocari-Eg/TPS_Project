@@ -22,6 +22,8 @@ void UTPSGameInstance::SpawnPlayer()
     Player =	GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,75.0f),FRotator::ZeroRotator);
 	Player->SetPlayerCharacter(GetNickName());
 	PlayerList.Add(GetNickName(),Player);
+
+	Player->SetNameEvent();
 	GetWorld()->GetFirstPlayerController()->Possess(Player);
 
 }
@@ -29,12 +31,13 @@ void UTPSGameInstance::SpawnPlayer()
 void UTPSGameInstance::AddPlayUser(const FString& name)
 {
 	
-	if(name!=m_NickName||!AlreadyInList(name))
+	if(!AlreadyInList(name))
 	{
 		FActorSpawnParameters Parameters;
 		Parameters.SpawnCollisionHandlingOverride=ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		 APlayerCharacter* NewPlayer=GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,77.0f),FRotator::ZeroRotator,Parameters);
 		NewPlayer->NickName=name;
+		NewPlayer->SetNameEvent();
 		 PlayerList.Add(name,NewPlayer);
 		 TLOG_W(TEXT("%s Player In Game "),*name);
 	}

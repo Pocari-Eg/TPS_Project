@@ -30,6 +30,7 @@ private:
 	TSubclassOf<APlayerCharacter> PlayerClass;
 	UPROPERTY()
 	APlayerCharacter* Player;
+
 public:
 
 	//constructor

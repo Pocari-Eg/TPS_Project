@@ -65,7 +65,7 @@ public:
 	
 	//network;
 	ClientThread* client;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FString NickName;
 	FReplication RepliData;
 
@@ -184,4 +184,7 @@ UFUNCTION(BlueprintCallable)
 	UPROPERTY(EditAnywhere,Category="DEBUG")
 	float ShootLimit=1.0f;
 	float ShootTimer=0.0f;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetNameEvent();
 };
