@@ -19,12 +19,6 @@ private:
 	UPROPERTY()
 	APlayerCharacter* Player;
 
-	//montage
-	UPROPERTY(EditAnywhere, blueprintreadWrite,category= Montage,meta =(Allowprivateaccess=true))
-	UAnimMontage* WalkMontage;
-	UPROPERTY(EditAnywhere, blueprintreadWrite, category = Montage, meta = (Allowprivateaccess = true))
-	UAnimMontage* IdleMontage;
-
 	
 	
 public:
@@ -36,13 +30,15 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsWalk;
 	UPROPERTY(BlueprintReadWrite)
+	bool bIsRun;
+	UPROPERTY(BlueprintReadWrite)
 	bool bIsPlayer=false;
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsEquip=false;
 public:
 	void Init(APlayerCharacter* value){Player=value;}
 	void SetPlayer(){bIsPlayer=true;}
-//playMotange
-	void PlayIdleMontage();
-	void PlayWalkMontage();
+
 	
 //fsm
 	UFUNCTION(BlueprintCallable)
@@ -62,4 +58,14 @@ public:
 	
 	UFUNCTION()
 	bool GetbIsWalk(){return bIsWalk;}
+
+	UFUNCTION()
+	void SetbIsRun(bool value){bIsRun=value;}
+	UFUNCTION(BlueprintCallable)
+	bool GetbIsRun(){return bIsRun;}
+
+	UFUNCTION()
+	void SetbIsEquip(bool value){bIsEquip=value;}
+	UFUNCTION(BlueprintCallable)
+	bool GetbIsEquip(){return bIsEquip;}
 };

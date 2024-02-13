@@ -5,20 +5,11 @@
 #include "Character/PlayerCharacter.h"
 #include "Character/weapon/WeaponComponent.h"
 
-void UPlayerAnimInstance::PlayIdleMontage()
-{
-	if (!Montage_IsPlaying(IdleMontage)&&IdleMontage!=nullptr)Montage_Play(IdleMontage, 1.0f);
-}
-
-void UPlayerAnimInstance::PlayWalkMontage()
-{
-	if (!Montage_IsPlaying(WalkMontage)&&WalkMontage!=nullptr)Montage_Play(WalkMontage, 1.0f);
-}
 
 void UPlayerAnimInstance::SetWalkState()
 {
 	if(Player!=nullptr)Player->GetFSMInstance()->ChangeState(UWalkState::GetInstance());
-bIsWalk=true;
+     bIsWalk=true;
 	Player->GetWeapon()->SetWalkGrip();
 
 	

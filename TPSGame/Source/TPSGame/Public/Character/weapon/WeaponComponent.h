@@ -37,7 +37,8 @@ UPROPERTY()
 public:
 	UPROPERTY(EditAnywhere)
 		int32 Range = 1000;
-
+private:
+	bool bIsEquip=false;
 #pragma endregion Data
 		
 	//function
@@ -64,6 +65,8 @@ public:
 	UFUNCTION()
 	void SetWalkGrip();
 
+	void SetbIsEquip(bool value){bIsEquip=value;}
+	bool GetbIsEquip(){return bIsEquip;}
 
-	void Fire(class UCameraComponent* Camera,class USpringArmComponent* SpringArm);
+	bool Fire(class UCameraComponent* Camera,class USpringArmComponent* SpringArm);
 };

@@ -10,6 +10,7 @@
  * 
  */
 class UTextBlock;
+class UCanvasPanel;
 class APlayerCharacter;
 UCLASS()
 class TPSGAME_API UPlayerHud : public UUserWidget
@@ -24,6 +25,12 @@ private:
 	//widget
 	UPROPERTY()
 	UTextBlock* HPText;
+
+	UPROPERTY()
+	UTextBlock* ItemName;
+	UPROPERTY()
+	UCanvasPanel* ActionPanel;
+	
 
 	//widget
 	UPROPERTY()
@@ -42,6 +49,9 @@ public:
 
 void BindPlayer(APlayerCharacter* value);
 void OpenDeathWidget();
+
+void OnActionWidget(const FString& name);
+void OffActionWidget();
 protected:
 	// 위젯을 초기화
 	virtual void NativeConstruct() override;

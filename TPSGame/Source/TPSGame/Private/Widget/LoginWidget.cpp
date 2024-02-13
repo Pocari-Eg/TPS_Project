@@ -33,7 +33,7 @@ void ULoginWidget::TryLogin()
 {
 	if(!CheckEmptyData())
 	{
-		const FString ErrorCode=m_LoginManager->Login(ID->Text,PASSWORD->Text);
+		const FString ErrorCode=m_LoginManager->Login(ID->GetText(),PASSWORD->GetText());
 		PrintMessage(ErrorCode);
 	}
 	

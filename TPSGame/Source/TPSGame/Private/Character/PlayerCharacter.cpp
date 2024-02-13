@@ -20,6 +20,8 @@
 #include "Widget/PlayerHud.h"
 #include "Engine/DamageEvents.h"
 #include "Character/weapon/WeaponComponent.h"
+#include "Item/DropItem.h"
+#include "Item/DropWeapon.h"
 #include "Network/ClientThread.h"
 
 // Sets default values
@@ -41,7 +43,11 @@ APlayerCharacter::APlayerCharacter()
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Script/Engine.AnimBlueprint'/Game/Characters/BP_PlayerAnim.BP_PlayerAnim_c'"));
 		if (CharacterAnimInstance.Succeeded())
+		{
 			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
+		}
+
+
 	}
 
     GetCapsuleComponent()->SetCollisionProfileName("Character");
@@ -51,7 +57,7 @@ APlayerCharacter::APlayerCharacter()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MaxWalkSpeed = 250.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
@@ -61,7 +67,7 @@ APlayerCharacter::APlayerCharacter()
 	CameraBoom->TargetArmLength = 110.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 	CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-
+   
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -74,7 +80,7 @@ APlayerCharacter::APlayerCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-
+	
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->RotationRate=FRotator(0.f,360.f,0.f);
@@ -82,19 +88,8 @@ APlayerCharacter::APlayerCharacter()
 
 	Weapon = CreateDefaultSubobject<UWeaponComponent>(TEXT("PlayerWeapon"));
 	FName WeaponSocket(TEXT("RHandSocket"));
-	if (GetMesh()->DoesSocketExist(WeaponSocket)) {
-		const ConstructorHelpers::FObjectFinder<USkeletalMesh>WeaponMesh(TEXT("SkeletalMesh'/Game/models/weapon/m4a1/ar_style_gun.ar_style_gun_ar15'"));
-		if (WeaponMesh.Succeeded())
-		{
-			Weapon->SetIdleGrip();
-			Weapon->MeshComponent->SetSkeletalMesh(WeaponMesh.Object);
-		
-		}
-
-		Weapon->MeshComponent->SetRelativeScale3D(FVector(0.115f, 0.115f, 0.115f));
-		Weapon->MeshComponent->SetupAttachment(GetMesh(), WeaponSocket);
-	}
-	
+	Weapon->MeshComponent->SetRelativeScale3D(FVector(0.115f, 0.115f, 0.115f));
+	Weapon->MeshComponent->SetupAttachment(GetMesh(), WeaponSocket);
 	//curve
     	const ConstructorHelpers::FObjectFinder<UCurveFloat>RotationCurveData(TEXT("/Script/Engine.CurveFloat'/Game/data/RotatingCurve.RotatingCurve'"));
     	if (RotationCurveData.Succeeded())
@@ -153,17 +148,16 @@ void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	HeadFollowing();
-	if (PlayerAnim->GetbIsWalk())CameraFollowPlayer();
-	if (bIsPlayer) {
 
-		
-	}
-	else
+
+	if(!bIsCameraControl)
 	{
-		PositionSync(DeltaTime);
+		HeadFollowing();
+		if (PlayerAnim->GetbIsWalk())CameraFollowPlayer();
 	}
-
+	if (!bIsPlayer) {
+		PositionSync(DeltaTime);
+	}	
 	if(bIsAutoShoot)
 	{
 		ShootTimer+=DeltaTime;
@@ -183,6 +177,15 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::Trun);
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::LookUp);
+
+	PlayerInputComponent->BindAction<TDelegate<void(bool)>>("Run", IE_Pressed, this	, &APlayerCharacter::Run, true);
+	PlayerInputComponent->BindAction<TDelegate<void(bool)>>("Run", IE_Released, this, &APlayerCharacter::Run, false);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::Fire);
+	PlayerInputComponent->BindAction("Action", IE_Pressed, this, &APlayerCharacter::Action);
+
+	PlayerInputComponent->BindAction("Camera", IE_Pressed, this, &APlayerCharacter::OnCameraControl);
+	PlayerInputComponent->BindAction("Camera", IE_Released, this, &APlayerCharacter::OffCameraControl);
+
 }
 
 float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -240,6 +243,7 @@ void APlayerCharacter::LookUp(float value)
 	float time=GetWorld()->DeltaTimeSeconds;
 	float m_value=value*CameraSpeed*time;
 	AddControllerPitchInput(m_value);
+
 }
 
 void APlayerCharacter::HeadFollowing()
@@ -288,7 +292,7 @@ void APlayerCharacter::HeadFollowing()
 	}
 }
 
-void APlayerCharacter::CameraFollowPlayer()
+void APlayerCharacter::CameraFollowPlayer() 
 {
 	FVector CameraV=FollowCamera->GetForwardVector();
 	FVector PlayerV =GetActorForwardVector();
@@ -434,9 +438,15 @@ void APlayerCharacter::SetReplidata(const FReplication value)
 	RepliData=value;
 }
 
-void APlayerCharacter::FIRE()
+void APlayerCharacter::Fire()
 {
-	if(bIsPlayer)Weapon->Fire(FollowCamera,CameraBoom);
+	if(bIsPlayer)
+	{
+		if(!Weapon->Fire(FollowCamera,CameraBoom))
+		{
+			TLOG_E(TEXT("Not Equip Weapon"));
+		}
+	}
 }
 
 void APlayerCharacter::Hit(int32 Damage)
@@ -449,5 +459,71 @@ void APlayerCharacter::Hit(int32 Damage)
 	
 }
 
+void APlayerCharacter::Run(bool value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = value ? 500.f : 330.f;
+	PlayerAnim->SetbIsRun(value);
+}
 
+void APlayerCharacter::Action()
+{
+	switch (ReadyAction)
+	{
+	case EAction::PICKUP:
+		PickUpItem();
+		break;
+	case EAction::OPEN:
+		break;
+	case EAction::RIDE:
+		break;
+	case EAction::NONE:
+		break;
+			
+		
+	}
+}
+
+void APlayerCharacter::OnCameraControl()
+{
+	bIsCameraControl=true;
+	OriginCameraRotator=GetControlRotation();
+	CameraBoom->bInheritPitch=false;
+	
+
+	
+}
+void APlayerCharacter::OffCameraControl()
+{
+	
+	bIsCameraControl=false;
+	GetController()->SetControlRotation(OriginCameraRotator);
+	CameraBoom->bInheritPitch=true;
+}
+
+void APlayerCharacter::OnClosedItem( ADropItem* item)
+{
+	ReadyAction=EAction::PICKUP;
+	PlayerHud->OnActionWidget(item->GetItemName());
+	closedItem=item;
+}
+
+void APlayerCharacter::OnFarItem()
+{
+	ReadyAction=EAction::NONE;
+	PlayerHud->OffActionWidget();
+	closedItem=nullptr;
+}
+
+
+void APlayerCharacter::PickUpItem()
+{
+	if(closedItem!=nullptr)
+	{	
+		Weapon->SetIdleGrip();
+		Weapon->MeshComponent->SetSkeletalMesh(Cast<ADropWeapon>(closedItem)->GetSkeletalMesh());
+		closedItem->Destroy();
+		Weapon->SetbIsEquip(true);
+		PlayerAnim->SetbIsEquip(true);
+	}
+}
 

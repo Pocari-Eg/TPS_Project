@@ -7,6 +7,7 @@
 #include "Curves/CurveFloat.h"
 #include "Components/TimelineComponent.h"
 #include "Character/FSM/PlayerFSM.h"
+#include "Item/DropItem.h"
 
 
 #include "PlayerCharacter.generated.h"
@@ -14,6 +15,16 @@
 DECLARE_MULTICAST_DELEGATE(FOnHpChangedDelegate);
 
 class ClientThread;
+class ADropItem;
+UENUM()
+enum class EAction: uint8
+{
+	PICKUP,
+	OPEN,
+	RIDE,
+	NONE
+};
+
 
 UCLASS()
 class TPSGAME_API APlayerCharacter : public ACharacter
@@ -70,8 +81,18 @@ public:
 	FReplication RepliData;
 
 	UPROPERTY()
-		bool bIsPlayer = false;
+	bool bIsPlayer = false;
 
+	UPROPERTY()
+	bool bIsCameraControl=false;
+	UPROPERTY()
+	FRotator OriginCameraRotator=FRotator::ZeroRotator;
+	//Aciton
+	UPROPERTY()
+	EAction ReadyAction=EAction::NONE;
+	UPROPERTY()
+	 ADropItem* closedItem;
+	
 	//delegate
 	FOnHpChangedDelegate OnHpChanged;
 protected:
@@ -128,7 +149,7 @@ private:
    UFUNCTION()
 	void PositionSync(float DeltaTime);
 	
-UFUNCTION()
+	UFUNCTION()
 	void InitRotatingCurve();
 
 	UFUNCTION()
@@ -138,6 +159,9 @@ UFUNCTION()
 
 	void InitPlayer();
 
+	//action
+    UFUNCTION()
+	void PickUpItem();
 	
 public:
 	UFUNCTION()
@@ -152,19 +176,32 @@ public:
 	//fsm
 	 UPlayerFSM* GetFSMInstance(){return FSMInstance;}
 	
-
 	//weapon
 	 class UWeaponComponent* GetWeapon(){return Weapon;}
 
 	void SetHP(int32 val){HP=val;}
 	float GetHP(){return HP;}
-
-UFUNCTION(BlueprintCallable)
-	void FIRE();
+    //Action
+    UFUNCTION(BlueprintCallable)
+	void Fire();
 
 	UFUNCTION(BlueprintCallable)
 	void Hit(int32 Damage);
+	UFUNCTION(BlueprintCallable)
+	void Run(bool value);
+	UFUNCTION()
+	void Action();
+	UFUNCTION()
+	void OnCameraControl();
+	UFUNCTION()
+	void OffCameraControl();
+//item
 
+	UFUNCTION()
+	void OnClosedItem( ADropItem* item);
+	UFUNCTION()
+	void OnFarItem();
+	
 //network
 
 	

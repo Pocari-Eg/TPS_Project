@@ -9,11 +9,25 @@
   <component name="ChangeListManager">
     <list default="true" id="0b0f9d7f-7259-4929-927d-8b87b482c4f8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.TPSGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.TPSGame/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultInput.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultInput.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/BP_PlayerAnim.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/BP_PlayerAnim.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Characters/BP_PlayerCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/BP_PlayerCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Level/TestLogin.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Level/TestLogin.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/TPSGameInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/TPSGameInstance.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/Rifle_Aiming_Idle_mixamo_com.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/Walk_With_Rifle_mixamo_com.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/StarterContent/Materials/M_Brick_Clay_New.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/StarterContent/Materials/M_Brick_Clay_New.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Widget/HUD/BP_PlayerHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Widget/HUD/BP_PlayerHUD.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Level/TestMap/1/JG/3N3J3NUVG1V60UI3PXBDKT.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerAnimInstance.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Character/weapon/WeaponComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Character/weapon/WeaponComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Widget/JoinWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Widget/JoinWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Widget/LoginWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Widget/LoginWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Widget/PlayerHud.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Widget/PlayerHud.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerAnimInstance.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/TPSGameInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/TPSGameInstance.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Character/weapon/WeaponComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Character/weapon/WeaponComponent.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Widget/PlayerHud.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Widget/PlayerHud.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -192,7 +206,13 @@
       <workItem from="1707203020282" duration="3358000" />
       <workItem from="1707206445079" duration="9145000" />
       <workItem from="1707379846657" duration="1878000" />
-      <workItem from="1707402855744" duration="2355000" />
+      <workItem from="1707402855744" duration="3027000" />
+      <workItem from="1707486787660" duration="4789000" />
+      <workItem from="1707545461526" duration="4800000" />
+      <workItem from="1707574871570" duration="3878000" />
+      <workItem from="1707657897993" duration="4207000" />
+      <workItem from="1707755114928" duration="1680000" />
+      <workItem from="1707829008757" duration="6579000" />
     </task>
     <servers />
   </component>
@@ -216,9 +236,9 @@
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/TPSGame/Private/TPSGameInstance.cpp</url>
-          <line>28</line>
-          <option name="timeStamp" value="14" />
+          <url>file://$PROJECT_DIR$/Source/TPSGame/Private/Widget/PlayerHud.cpp</url>
+          <line>57</line>
+          <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -47,7 +47,7 @@ void UJoinWidget::TryJoin()
 
 	if(!CheckEmptyData())
 	{
-		const FString ErrorCode=m_LoginManager->Join(ID->Text,PASSWORD->Text,NickName->Text);
+		const FString ErrorCode=m_LoginManager->Join(ID->GetText(),PASSWORD->GetText(),NickName->GetText());
 		PrintMessage(ErrorCode);
 	}
 

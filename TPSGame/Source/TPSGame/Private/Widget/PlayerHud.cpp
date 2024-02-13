@@ -4,6 +4,7 @@
 #include "Widget/PlayerHud.h"
 
 #include "Character/PlayerCharacter.h"
+#include "Components/CanvasPanel.h"
 #include "Components/TextBlock.h"
 
 
@@ -25,6 +26,17 @@ void UPlayerHud::OpenDeathWidget()
 	DeathWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
+void UPlayerHud::OnActionWidget(const FString& name)
+{
+	ItemName->SetText(FText::FromString(name));
+	ActionPanel->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UPlayerHud::OffActionWidget()
+{
+	ActionPanel->SetVisibility(ESlateVisibility::Hidden);
+}
+
 void UPlayerHud::UpdateHPWidget()
 {
 	if (Player != nullptr) {
@@ -41,4 +53,6 @@ void UPlayerHud::NativeConstruct()
 
 	HPText =Cast<UTextBlock>(GetWidgetFromName(TEXT("HPVal")));
 	DeathWidget=Cast<UUserWidget>(GetWidgetFromName(TEXT("BP_DeathWidget")));
+	ItemName=Cast<UTextBlock>(GetWidgetFromName(TEXT("ItemName")));
+	ActionPanel=Cast<UCanvasPanel>(GetWidgetFromName(TEXT("ActionPanel")));
 }

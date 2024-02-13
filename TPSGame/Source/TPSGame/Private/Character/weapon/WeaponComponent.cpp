@@ -75,7 +75,7 @@ void UWeaponComponent::SetWalkGrip()
 	MeshComponent->SetRelativeRotation(FRotator(-78.0f,-50.0f,46.0f));
 }
 
-void UWeaponComponent::Fire(class UCameraComponent* Camera,class USpringArmComponent* SpringArm)
+bool UWeaponComponent::Fire(class UCameraComponent* Camera,class USpringArmComponent* SpringArm)
 {
 	
 	/*
@@ -110,6 +110,8 @@ void UWeaponComponent::Fire(class UCameraComponent* Camera,class USpringArmCompo
 	}
 */
 
+	if(!bIsEquip)return false;
+	
 
 	FVector CameraPos=	Camera->GetComponentLocation();
 	FVector ShootPos=CameraPos+(Camera->GetForwardVector()*(SpringArm->TargetArmLength+100.0f));
@@ -117,6 +119,8 @@ void UWeaponComponent::Fire(class UCameraComponent* Camera,class USpringArmCompo
 	direction.Normalize();
 	auto bullet = GetWorld()->SpawnActor<ABullet>(ffsBullet,ShootPos,Camera->GetComponentRotation());
 	bullet->Shoot();
+
+	return true;
 }
 
 
