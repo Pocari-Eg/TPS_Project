@@ -37,7 +37,7 @@ void ADropItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	if(Cast<APlayerCharacter>(OtherActor))
 	{
 		APlayerCharacter* Player=Cast<APlayerCharacter>(OtherActor);
-		Player->OnClosedItem(this);
+		if(Player->bIsPlayer)Player->OnClosedItem(this);
 	}
 }
 
@@ -47,7 +47,7 @@ void ADropItem::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 	if(Cast<APlayerCharacter>(OtherActor))
 	{
 		APlayerCharacter* Player=Cast<APlayerCharacter>(OtherActor);
-		Player->OnFarItem();
+		if(Player->bIsPlayer)Player->OnFarItem();
 	}
 }
 

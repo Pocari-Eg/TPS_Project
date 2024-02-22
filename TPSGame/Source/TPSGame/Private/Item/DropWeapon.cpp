@@ -23,3 +23,8 @@ void ADropWeapon::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	TLOG_W(TEXT("OnEndOverlap Weapon"));
 }
 
+UStaticMesh* ADropWeapon::GetMesh() const
+{
+	return StaticMeshComponent->GetStaticMesh();
+}
+

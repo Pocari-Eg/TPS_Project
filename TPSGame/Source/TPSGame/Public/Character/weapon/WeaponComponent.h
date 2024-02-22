@@ -19,7 +19,7 @@ class TPSGAME_API UWeaponComponent : public USceneComponent
 #pragma region Component
 public:
 UPROPERTY(EditAnywhere, blueprintreadwrite, category = data)
-class USkeletalMeshComponent* MeshComponent;
+class UStaticMeshComponent* MeshComponent;
 #pragma endregion Component
 
 #pragma  region Bullet

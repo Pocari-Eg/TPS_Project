@@ -14,9 +14,6 @@ class TPSGAME_API ADropWeapon : public ADropItem
 {
 	GENERATED_BODY()
 
-private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	 USkeletalMesh* SkeletalMesh;
 	
 public:
 	ADropWeapon();
@@ -27,5 +24,5 @@ public:
 		AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
 
-	 USkeletalMesh* GetSkeletalMesh(){return SkeletalMesh;}
+	 UStaticMesh* GetMesh() const;
 };

@@ -11,7 +11,7 @@ class TPSGAME_API ADropItem : public AActor
 {
 	GENERATED_BODY()
 #pragma region var
-private:
+protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class USphereComponent* SphereComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

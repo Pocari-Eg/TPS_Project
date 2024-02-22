@@ -87,8 +87,7 @@ APlayerCharacter::APlayerCharacter()
 
 
 	Weapon = CreateDefaultSubobject<UWeaponComponent>(TEXT("PlayerWeapon"));
-	FName WeaponSocket(TEXT("RHandSocket"));
-	Weapon->MeshComponent->SetRelativeScale3D(FVector(0.115f, 0.115f, 0.115f));
+	FName WeaponSocket(TEXT("WeaponRight"));
 	Weapon->MeshComponent->SetupAttachment(GetMesh(), WeaponSocket);
 	//curve
     	const ConstructorHelpers::FObjectFinder<UCurveFloat>RotationCurveData(TEXT("/Script/Engine.CurveFloat'/Game/data/RotatingCurve.RotatingCurve'"));
@@ -132,6 +131,8 @@ void APlayerCharacter::BeginPlay()
 	PlayerAnim=Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 	PlayerAnim->Init(this);
 	PlayerAnim->SetIdleState();
+
+	PlayerAnim->OnShoot.AddUObject(this, &APlayerCharacter::Fire);
 	instance=Cast<UTPSGameInstance>(GetGameInstance());
 }
 
@@ -167,6 +168,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 			Weapon->Fire(FollowCamera,CameraBoom);
 		}
 	}
+	if(bIsFire&&bIsPlayer)
+	{
+		PlayFireAnim();
+	}
 }
 
 // Called to bind functionality to input
@@ -180,7 +185,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	PlayerInputComponent->BindAction<TDelegate<void(bool)>>("Run", IE_Pressed, this	, &APlayerCharacter::Run, true);
 	PlayerInputComponent->BindAction<TDelegate<void(bool)>>("Run", IE_Released, this, &APlayerCharacter::Run, false);
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::Fire);
+	
+	PlayerInputComponent->BindAction<TDelegate<void(bool)>>("Fire", IE_Pressed, this	, &APlayerCharacter::SetFire, true);
+	PlayerInputComponent->BindAction<TDelegate<void(bool)>>("Fire", IE_Released, this, &APlayerCharacter::SetFire, false);
+	
 	PlayerInputComponent->BindAction("Action", IE_Pressed, this, &APlayerCharacter::Action);
 
 	PlayerInputComponent->BindAction("Camera", IE_Pressed, this, &APlayerCharacter::OnCameraControl);
@@ -221,6 +229,8 @@ void APlayerCharacter::MoveForward(float value)
 {
 	FVector Direction = GetActorForwardVector();
 	AddMovementInput(Direction, value);
+
+	PlayerAnim->MoveDirection(value);
 }
 
 void APlayerCharacter::MoveRight(float value)
@@ -228,6 +238,8 @@ void APlayerCharacter::MoveRight(float value)
 	FVector FowardVector = GetActorForwardVector();
 	FVector Direction=FowardVector.RotateAngleAxis(90.0f,FVector::UpVector);
 	AddMovementInput(Direction, value);
+
+	PlayerAnim->LowerRotation=value*30;
 }
 
 void APlayerCharacter::Trun(float value)
@@ -440,12 +452,19 @@ void APlayerCharacter::SetReplidata(const FReplication value)
 
 void APlayerCharacter::Fire()
 {
-	if(bIsPlayer)
-	{
+	
 		if(!Weapon->Fire(FollowCamera,CameraBoom))
 		{
 			TLOG_E(TEXT("Not Equip Weapon"));
 		}
+	
+}
+
+void APlayerCharacter::PlayFireAnim()
+{
+	if(bIsPlayer)
+	{
+		PlayerAnim->PlayFireMonatage();
 	}
 }
 
@@ -463,6 +482,11 @@ void APlayerCharacter::Run(bool value)
 {
 	GetCharacterMovement()->MaxWalkSpeed = value ? 500.f : 330.f;
 	PlayerAnim->SetbIsRun(value);
+}
+
+void APlayerCharacter::SetFire(bool value)
+{
+	bIsFire=value;
 }
 
 void APlayerCharacter::Action()
@@ -517,10 +541,12 @@ void APlayerCharacter::OnFarItem()
 
 void APlayerCharacter::PickUpItem()
 {
+	
 	if(closedItem!=nullptr)
 	{	
 		Weapon->SetIdleGrip();
-		Weapon->MeshComponent->SetSkeletalMesh(Cast<ADropWeapon>(closedItem)->GetSkeletalMesh());
+		auto item=Cast<ADropWeapon>(closedItem);
+		Weapon->MeshComponent->SetStaticMesh(item->GetMesh());
 		closedItem->Destroy();
 		Weapon->SetbIsEquip(true);
 		PlayerAnim->SetbIsEquip(true);

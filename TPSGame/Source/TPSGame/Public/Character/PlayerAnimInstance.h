@@ -9,7 +9,7 @@
 /**
  * 
  */
-
+DECLARE_MULTICAST_DELEGATE(FOnShootDelegate);
 class APlayerCharacter;
 UCLASS()
 class TPSGAME_API UPlayerAnimInstance : public UAnimInstance
@@ -19,6 +19,10 @@ private:
 	UPROPERTY()
 	APlayerCharacter* Player;
 
+private:
+	//montage
+	UPROPERTY(EditAnywhere, blueprintreadWrite, category = Montage, meta = (Allowprivateaccess = true))
+	UAnimMontage* FireMontage;
 	
 	
 public:
@@ -35,10 +39,23 @@ public:
 	bool bIsPlayer=false;
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsEquip=false;
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsForward;
+	UPROPERTY(BlueprintReadWrite)
+	float LowerRotation;
+public:
+	//delegate
+	FOnShootDelegate OnShoot;
+
+
+	
 public:
 	void Init(APlayerCharacter* value){Player=value;}
 	void SetPlayer(){bIsPlayer=true;}
 
+	//playMontage
+	UFUNCTION()
+	void PlayFireMonatage();
 	
 //fsm
 	UFUNCTION(BlueprintCallable)
@@ -68,4 +85,12 @@ public:
 	void SetbIsEquip(bool value){bIsEquip=value;}
 	UFUNCTION(BlueprintCallable)
 	bool GetbIsEquip(){return bIsEquip;}
+
+	UFUNCTION()
+	void MoveDirection(float value);
+
+	//notify
+private:
+	UFUNCTION()
+	void AnimNotify_Shoot() const;
 };

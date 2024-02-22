@@ -19,10 +19,9 @@ UWeaponComponent::UWeaponComponent(const FObjectInitializer& ObjectInitializer):
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-	MeshComponent= CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
+	MeshComponent= CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
 	// ...
-
-
+	
 	ConstructorHelpers::FClassFinder<ABullet>bulletClass(TEXT("Blueprint'/Game/Object/Weapon/BP_Bullet.BP_Bullet_C'"));
 	if(IsValid(bulletClass.Class))
 	{
@@ -63,16 +62,12 @@ void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UWeaponComponent::SetIdleGrip()
 {
-	MeshComponent->SetRelativeLocation(FVector(8.7f,-18.0f,2.7f));
-	//y,z,x
-	MeshComponent->SetRelativeRotation(FRotator(-78.0f,-50.0f,46.0f));
+	
 }
 
 void UWeaponComponent::SetWalkGrip()
 {
-	MeshComponent->SetRelativeLocation(FVector(8.7f,-18.0f,2.7f));
-	//y,z,x
-	MeshComponent->SetRelativeRotation(FRotator(-78.0f,-50.0f,46.0f));
+	
 }
 
 bool UWeaponComponent::Fire(class UCameraComponent* Camera,class USpringArmComponent* SpringArm)

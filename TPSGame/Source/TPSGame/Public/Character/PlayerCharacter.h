@@ -92,6 +92,9 @@ public:
 	EAction ReadyAction=EAction::NONE;
 	UPROPERTY()
 	 ADropItem* closedItem;
+
+	UPROPERTY()
+	bool bIsFire=false;
 	
 	//delegate
 	FOnHpChangedDelegate OnHpChanged;
@@ -184,11 +187,17 @@ public:
     //Action
     UFUNCTION(BlueprintCallable)
 	void Fire();
-
+	UFUNCTION(BlueprintCallable)
+	void PlayFireAnim();
+	
 	UFUNCTION(BlueprintCallable)
 	void Hit(int32 Damage);
 	UFUNCTION(BlueprintCallable)
 	void Run(bool value);
+
+	UFUNCTION(BlueprintCallable)
+	void SetFire(bool value);
+	
 	UFUNCTION()
 	void Action();
 	UFUNCTION()
