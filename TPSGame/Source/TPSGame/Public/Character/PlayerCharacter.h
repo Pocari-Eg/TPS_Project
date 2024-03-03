@@ -7,6 +7,7 @@
 #include "Curves/CurveFloat.h"
 #include "Components/TimelineComponent.h"
 #include "Character/FSM/PlayerFSM.h"
+#include "Sound/SoundManager.h"
 #include "Item/DropItem.h"
 
 
@@ -230,7 +231,8 @@ public:
 	//event
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetNameEvent();
-	
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShootEffectEvent();
 #pragma endregion Function
 	
 	//debug
@@ -248,6 +250,9 @@ public:
 	float ShootLimit=1.0f;
 	float ShootTimer=0.0f;
 
-
+//sound test
+	//StackBreak
+	SoundManager* FireSound;
+	class UFMODEvent* FireSoundEvent;
 	
 };

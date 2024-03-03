@@ -35,3 +35,10 @@ struct FHitData {
     int index;
 	int Damage;
 };
+UENUM(BluePrintType)
+enum class  ESoundStyle :uint8
+{
+	e_Bgm = 0 UMETA(DisplayName = "BGM"),
+	e_Amb UMETA(DisplayName = "AMB"),
+	e_Sfx  UMETA(DisplayName = "SFX")
+};

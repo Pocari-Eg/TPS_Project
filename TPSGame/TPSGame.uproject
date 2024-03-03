@@ -11,7 +11,8 @@
 			"AdditionalDependencies": [
 				"Engine",
 				"UMG",
-				"CoreUObject"
+				"CoreUObject",
+				"FMODStudio",
 			]
 		}
 	],
@@ -22,6 +23,11 @@
 			"TargetAllowList": [
 				"Editor"
 			]
+		},
+		{
+			"Name": "FMODStudio",
+			"Enabled": true
 		}
+		
 	]
 }

@@ -112,6 +112,10 @@ APlayerCharacter::APlayerCharacter()
 
 	LimitAngle = 55.0f;
 	CameraSpeed = 10.0f;
+
+
+	//sound
+	FireSoundEvent = UFMODBlueprintStatics::FindEventByName("event:/SFX/Weapon/SFX_M4A1Fire");
 	
 }
 
@@ -134,6 +138,9 @@ void APlayerCharacter::BeginPlay()
 
 	PlayerAnim->OnShoot.AddUObject(this, &APlayerCharacter::Fire);
 	instance=Cast<UTPSGameInstance>(GetGameInstance());
+
+	FireSound = new SoundManager(FireSoundEvent, GetWorld());
+	FireSound->SetVolume(0.5f);
 }
 
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -451,6 +458,10 @@ void APlayerCharacter::Fire()
 		{
 			if(bIsDebug)TLOG_E(TEXT("Not Equip Weapon"));
 		}
+	else
+	{
+		FireSound->SoundPlay3D(GetActorTransform());
+	}
 	
 }
 
