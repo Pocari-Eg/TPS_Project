@@ -150,12 +150,17 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
-	if(!bIsCameraControl)
+	if(bIsRDelay)
 	{
-		HeadFollowing();
-		if (PlayerAnim->GetbIsWalk())CameraFollowPlayer();
+		RLimitTimer+=DeltaTime;
+		if(RLimitTimer>=RLimitTime)
+		{
+			bIsFollow=true;
+			bIsRDelay=false;
+		}
 	}
+
+
 	if (!bIsPlayer) {
 		PositionSync(DeltaTime);
 	}	
@@ -172,6 +177,12 @@ void APlayerCharacter::Tick(float DeltaTime)
 	{
 		PlayFireAnim();
 	}
+
+		if(!bIsCameraControl)
+    	{
+    		UpperFollowCamera();
+    		if (PlayerAnim->GetbIsWalk())CameraFollowPlayer();
+    	}
 }
 
 // Called to bind functionality to input
@@ -258,47 +269,30 @@ void APlayerCharacter::LookUp(float value)
 
 }
 
-void APlayerCharacter::HeadFollowing()
+void APlayerCharacter::UpperFollowCamera()
 {
 
-	//대상 전면 벡터
-	FVector CameraV=FollowCamera->GetForwardVector();
-	FVector PlayerV =GetActorForwardVector();
+	FVector CameraFowardVecetor=FollowCamera->GetForwardVector();
 	
-	PlayerV.Normalize();
-	CameraV.Normalize();
-	FQuat Rot;
-	if(!PlayerAnim->GetbIsWalk())
-	{
-		//벡터를 가지고 qutarnion 구하기
-		 Rot=Math::VectorA2BRotation(PlayerV,CameraV);
+	float r,p,y;
 
-		if(bIsDebug)
-		{
-			FVector RotateVec = Rot.RotateVector(PlayerV);
+	float CurYaw=GetActorRotation().Yaw;
+	float sin=FMath::Sin(FMath::DegreesToRadians(CurYaw));
+    float cos=FMath::Cos(FMath::DegreesToRadians(CurYaw));
 
-			UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (PlayerV * 100), 300.0f, FLinearColor::Blue, 0.1f, 3.0f);
-			UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (CameraV * 100), 300.0f, FLinearColor::Red, 0.1f, 3.0f);
-		}
-	}
-	//머리 회전 값 전달
 
-	FRotator vertical=Rot.Rotator();
-	vertical.Yaw=0.0f;
-	vertical.Roll=0.0f;
-	vertical.Normalize();
-	PlayerAnim->SetverticalRotator(vertical);
+   FRotator CameraRotator=CameraFowardVecetor.Rotation();
+	p=CameraRotator.Pitch*cos;
+	r=CameraRotator.Pitch*sin;
+	y=CameraRotator.Yaw-CurYaw;
 	
-	FRotator horizontal=Rot.Rotator();
-	horizontal.Pitch=0.0f;
-	horizontal.Roll=0.0f;
-	horizontal.Normalize();
-	PlayerAnim->SethorizontalRotator((horizontal));
-	
-	float Degree =CalcDegree(PlayerV,CameraV);
+
+   PlayerAnim->SetFollowRotator(FRotator(p,y,r*-1.0f));
+	float degree=FMath::Abs(y);
 	//한변에 하체 및 플레이어의 방향을 회전
-	if(Degree>=LimitAngle)
+	if(degree>=LimitAngle&&bIsFollow)
 	{
+		CalcSign(GetActorForwardVector(),CameraFowardVecetor);
 		PrevRotation=0.0f;
 		RotationTimeLine->PlayFromStart();
 	}
@@ -322,7 +316,7 @@ void APlayerCharacter::CameraFollowPlayer()
 	AddActorWorldRotation(RotationQuat);
 }
 
-float APlayerCharacter::CalcDegree(FVector PlayerTemp, FVector CameraTemp)
+void APlayerCharacter::CalcSign(FVector PlayerTemp, FVector CameraTemp)
 {	
 	
 	CameraTemp.Z=0.0f;
@@ -337,7 +331,6 @@ float APlayerCharacter::CalcDegree(FVector PlayerTemp, FVector CameraTemp)
 	FVector OutProduct = FVector::CrossProduct(PlayerTemp, CameraTemp);
 	Sign = UKismetMathLibrary::SignOfFloat(OutProduct.Z);
 	
-	return degree;
 }
 
 void APlayerCharacter::Rotating(float Value)
@@ -351,8 +344,8 @@ void APlayerCharacter::Rotating(float Value)
 
 void APlayerCharacter::FinishRotation()
 {
-	PlayerAnim->SethorizontalRotator((FRotator::ZeroRotator));
-	PlayerAnim->SetverticalRotator((FRotator::ZeroRotator));
+
+	PlayerAnim->SetFollowRotator(FRotator::ZeroRotator);
 	PrevRotation = 0.0f;
 }
 
@@ -434,7 +427,7 @@ void APlayerCharacter::InitPlayer()
 void APlayerCharacter::SetPlayerCharacter(const FString&  name)
 {
 	NickName=name;
-	TLOG_E(TEXT("SetPlayerCharacter"));
+	if(bIsDebug)TLOG_E(TEXT("SetPlayerCharacter"));
 	client = new ClientThread();
 	client->BindPlayer(NickName,this);
 	client->StartThreads();
@@ -452,10 +445,11 @@ void APlayerCharacter::SetReplidata(const FReplication value)
 
 void APlayerCharacter::Fire()
 {
+
 	
 		if(!Weapon->Fire(FollowCamera,CameraBoom))
 		{
-			TLOG_E(TEXT("Not Equip Weapon"));
+			if(bIsDebug)TLOG_E(TEXT("Not Equip Weapon"));
 		}
 	
 }
@@ -511,17 +505,21 @@ void APlayerCharacter::OnCameraControl()
 {
 	bIsCameraControl=true;
 	OriginCameraRotator=GetControlRotation();
+	OriginCameraYaw=GetActorRotation().Yaw;
 	CameraBoom->bInheritPitch=false;
-	
-
+	bIsFollow=false;
 	
 }
 void APlayerCharacter::OffCameraControl()
 {
 	
-	bIsCameraControl=false;
 	GetController()->SetControlRotation(OriginCameraRotator);
+	PlayerAnim->SetFollowRotator(FRotator::ZeroRotator);
 	CameraBoom->bInheritPitch=true;
+	bIsCameraControl=false;
+	
+	RLimitTimer=0.0f;
+	bIsRDelay=true;
 }
 
 void APlayerCharacter::OnClosedItem( ADropItem* item)
@@ -541,7 +539,6 @@ void APlayerCharacter::OnFarItem()
 
 void APlayerCharacter::PickUpItem()
 {
-	
 	if(closedItem!=nullptr)
 	{	
 		Weapon->SetIdleGrip();

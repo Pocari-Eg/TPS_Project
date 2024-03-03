@@ -61,8 +61,7 @@ public:
 	//TimeLine
 	// Rotation
     UPROPERTY()
-	float PrevRotation;
-	float Sign;
+	float PrevRotation=0.0f;
 	UPROPERTY()
 	UCurveFloat* RotationCurve;
 	UPROPERTY()
@@ -72,7 +71,17 @@ public:
 	UPROPERTY()
 	FOnTimelineEvent RotationFinishCallback;
 
+	//플레이어 상체 회전 딜레이 주기
+	UPROPERTY()
+	float RLimitTime=0.5f;
+	UPROPERTY()
+	float RLimitTimer=0.0f;
+	UPROPERTY()
+	bool bIsFollow=true;
+	UPROPERTY()
+	bool bIsRDelay=false;
 
+	
 	
 	//network;
 	ClientThread* client;
@@ -87,6 +96,11 @@ public:
 	bool bIsCameraControl=false;
 	UPROPERTY()
 	FRotator OriginCameraRotator=FRotator::ZeroRotator;
+	UPROPERTY()
+	float OriginCameraYaw=0.0f;
+
+	int Sign;
+	
 	//Aciton
 	UPROPERTY()
 	EAction ReadyAction=EAction::NONE;
@@ -136,12 +150,12 @@ private:
 	UFUNCTION()
 	void LookUp(float value);
 	UFUNCTION()
-	void HeadFollowing();
+	void UpperFollowCamera();
     UFUNCTION()
 	void CameraFollowPlayer();
 
 	UFUNCTION()
-	float CalcDegree(FVector PlayerTemp,FVector CameraTemp);
+	void CalcSign(FVector PlayerTemp,FVector CameraTemp);
 	UFUNCTION()
 	void Rotating(float Value);
 	UFUNCTION()
@@ -213,6 +227,9 @@ public:
 	
 //network
 
+	//event
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetNameEvent();
 	
 #pragma endregion Function
 	
@@ -231,6 +248,6 @@ public:
 	float ShootLimit=1.0f;
 	float ShootTimer=0.0f;
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void SetNameEvent();
+
+	
 };

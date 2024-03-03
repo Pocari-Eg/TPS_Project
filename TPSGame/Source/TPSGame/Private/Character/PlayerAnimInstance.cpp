@@ -8,9 +8,9 @@
 
 void UPlayerAnimInstance::PlayFireMonatage()
 {
-	if (!Montage_IsPlaying(FireMontage)&&bIsEquip)
+	if (!Montage_IsPlaying(FireMontage)&&bIsEquip&&!bIsRun&&!Player->bIsCameraControl)
 	{
-		TLOG_E(TEXT("FIRE"));
+		if(Player->bIsDebug)TLOG_W(TEXT("FIRE"));
 		Montage_Play(FireMontage, 1.0f);
 	}
 }

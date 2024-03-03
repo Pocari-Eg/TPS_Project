@@ -10,42 +10,57 @@
     <list default="true" id="0b0f9d7f-7259-4929-927d-8b87b482c4f8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.TPSGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.TPSGame/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/ArbitraryStudio/Weapons/SM_Rifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ArbitraryStudio/Weapons/SM_Rifle.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Characters/BP_PlayerAnim.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/BP_PlayerAnim.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Characters/BP_PlayerCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/BP_PlayerCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Material/Ch15_1001_Diffuse.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Material/Ch15_1001_Glossiness.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Material/Ch15_1001_Normal.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Material/Ch15_1001_Specular.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Material/Ch15_1002_Diffuse.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Material/Ch15_1002_Emissive.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Material/Ch15_1002_Glossiness.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Material/Ch15_1002_Normal.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Material/Ch15_1002_Specular.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Material/Ch15_body.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Material/Ch15_body1.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Mesh/Rifle_Idle.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Mesh/Rifle_Idle_PhysicsAsset.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Mesh/Rifle_Idle_Skeleton.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/basic/basic_idle.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/basic/basic_run.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/basic/basic_walk.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/basic/montage/basic_idle_Montage.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/basic/montage/basic_run_Montage.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/basic/montage/basic_walk_Montage.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/rifle/Rifle_Aiming_Idle_mixamo_com.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/anim/rifle/Walk_With_Rifle_mixamo_com.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/sada.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Widget/HUD/BP_PlayerHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Widget/HUD/BP_PlayerHUD.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Level/TestMap/3/18/0E780KGY9AK2CVIFZTOA86.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Level/TestMap/3/18/0E780KGY9AK2CVIFZTOA86.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar15_1/ar15_1.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar15_1/ar15_1_AO.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar15_1/ar15_1_albedo.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar15_1/ar15_1_metallic.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar15_1/ar15_1_normal.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar15_1/ar15_1_roughness.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_15_2/ar_15_2.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_15_2/ar_15_2_Mixed_AO.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_15_2/ar_15_2_Opacity.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_15_2/ar_15_2_albedo.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_15_2/ar_15_2_normal.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_15_2/ar_15_2_roughness.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_style_gun.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_style_gun_acog.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_style_gun_ar15.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_style_gun_ar15_005.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_style_gun_belt.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_style_gun_bolt_carrier.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_style_gun_bullets.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_style_gun_dust_cover.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_style_gun_forward_assist.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_style_gun_gps.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_style_gun_magazine.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/ar_style_gun_trigger.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/bullet/bullets.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/bullet/bullets_Base_color.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/bullet/bullets_Metallic.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/bullet/bullets_Roughness.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/gps/gps.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/gps/gps_Base_color.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/gps/gps_Mixed_AO.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/gps/gps_Normal_OpenGL.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/gps/gps_Roughness.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/optic/acog_Base_color.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/optic/acog_Emissive.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/optic/acog_Metallic.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/optic/acog_Mixed_AO.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/optic/acog_Normal_OpenGL.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/optic/acog_Opacity.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/optic/acog_Roughness.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/models/weapon/m4a1/optic/optic_001.uasset" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerAnimInstance.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerCharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Character/weapon/WeaponComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Character/weapon/WeaponComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Item/DropItem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Item/DropItem.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Private/Item/DropWeapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Private/Item/DropWeapon.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerAnimInstance.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Character/PlayerCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Character/weapon/WeaponComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Character/weapon/WeaponComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Item/DropItem.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Item/DropItem.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/TPSGame/Public/Item/DropWeapon.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/TPSGame/Public/Item/DropWeapon.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,6 +108,27 @@
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://7" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/include/vector" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files (x86)/Windows Kits/10/Include/10.0.18362.0/um/winnt.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ThirdParty/Boost/include/boost/asio/detail/handler_work.hpp" root0="SKIP_HIGHLIGHTING" />
@@ -221,6 +257,15 @@
       <workItem from="1708343663090" duration="3668000" />
       <workItem from="1708430758955" duration="4588000" />
       <workItem from="1708604268722" duration="6202000" />
+      <workItem from="1708688861450" duration="2110000" />
+      <workItem from="1708777852252" duration="1205000" />
+      <workItem from="1708864849976" duration="1400000" />
+      <workItem from="1708962472839" duration="713000" />
+      <workItem from="1709039685298" duration="2813000" />
+      <workItem from="1709110045683" duration="670000" />
+      <workItem from="1709193152749" duration="17786000" />
+      <workItem from="1709303789797" duration="5119000" />
+      <workItem from="1709468250645" duration="2748000" />
     </task>
     <servers />
   </component>
@@ -244,9 +289,9 @@
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/TPSGame/Private/Character/PlayerCharacter.cpp</url>
-          <line>548</line>
-          <option name="timeStamp" value="17" />
+          <url>file://$PROJECT_DIR$/Source/TPSGame/Private/Character/weapon/WeaponComponent.cpp</url>
+          <line>112</line>
+          <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

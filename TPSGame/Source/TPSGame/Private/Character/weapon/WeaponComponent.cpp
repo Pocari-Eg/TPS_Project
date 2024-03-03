@@ -107,12 +107,14 @@ bool UWeaponComponent::Fire(class UCameraComponent* Camera,class USpringArmCompo
 
 	if(!bIsEquip)return false;
 	
-
+	
 	FVector CameraPos=	Camera->GetComponentLocation();
 	FVector ShootPos=CameraPos+(Camera->GetForwardVector()*(SpringArm->TargetArmLength+100.0f));
+	FRotator ShootRot=Camera->GetComponentRotation();
+
 	FVector direction=Camera->GetForwardVector();
 	direction.Normalize();
-	auto bullet = GetWorld()->SpawnActor<ABullet>(ffsBullet,ShootPos,Camera->GetComponentRotation());
+	auto bullet = GetWorld()->SpawnActor<ABullet>(ffsBullet,ShootPos,ShootRot);
 	bullet->Shoot();
 
 	return true;
