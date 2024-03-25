@@ -21,7 +21,7 @@
 #include "Engine/DamageEvents.h"
 #include "Character/weapon/WeaponComponent.h"
 #include "Item/DropItem.h"
-#include "Item/DropWeapon.h"
+#include "Item/ItemManager.h"
 #include "Network/ClientThread.h"
 
 // Sets default values
@@ -116,7 +116,7 @@ APlayerCharacter::APlayerCharacter()
 
 	//sound
 	FireSoundEvent = UFMODBlueprintStatics::FindEventByName("event:/SFX/Weapon/SFX_M4A1Fire");
-	
+	HitSoundEvent = UFMODBlueprintStatics::FindEventByName("event:/SFX/Voice/SFX_Fm_Hit");
 }
 
 void APlayerCharacter::UpdateUIOnMainThread(const FString& Message)
@@ -141,6 +141,11 @@ void APlayerCharacter::BeginPlay()
 
 	FireSound = new SoundManager(FireSoundEvent, GetWorld());
 	FireSound->SetVolume(0.5f);
+
+	HitSound = new SoundManager(HitSoundEvent, GetWorld());
+	HitSound->SetVolume(1.0f);
+	
+	Weapon->bindPlayer(this);
 }
 
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -223,7 +228,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 
 	// 피해 계산 및 적용
 
-
+	HitSound->SoundPlay2D();
 	// 사망 여부 확인
 	 if(HP - Damage<=0)
 	 {
@@ -366,7 +371,9 @@ void APlayerCharacter::PositionSync(float DeltaTime)
 	case State::WALK:
 		PlayerAnim->SetWalkState();
 		break;
-		
+	case State::RUN:
+	 	PlayerAnim->SetRunState();
+	 	break;	
 	}
 
 	// 현재 위치와 목표 위치를 가져옴
@@ -375,6 +382,19 @@ void APlayerCharacter::PositionSync(float DeltaTime)
 	// 선형 보간을 사용하여 부드러운 이동
 	FVector LerpedLocation = FMath::Lerp(CurrentLocation, TargetLocation, Time*DeltaTime);
 
+	FVector forwardVector=GetActorForwardVector();
+
+	FVector TargetVector=LerpedLocation-CurrentLocation;
+
+	float DotProduct = FVector::DotProduct(forwardVector.GetSafeNormal(), TargetVector.GetSafeNormal());
+
+	PlayerAnim->MoveDirection(DotProduct);
+
+
+	
+	
+	//PlayerAnim->MoveDirection(value);
+	
 	// 현재 회전과 목표 회전을 가져옴
 	FRotator CurrentRotation = GetActorRotation();
 	FRotator TargetRotation = FRotator::ZeroRotator; // 서버에서 받은 회전 등
@@ -428,7 +448,7 @@ void APlayerCharacter::InitPlayer()
 {
 	InitPlayerHud();
 	InitRotatingCurve();
-	Weapon->bindPlayer(this);
+
 }
 
 void APlayerCharacter::SetPlayerCharacter(const FString&  name)
@@ -452,12 +472,10 @@ void APlayerCharacter::SetReplidata(const FReplication value)
 
 void APlayerCharacter::Fire()
 {
-
-	
-		if(!Weapon->Fire(FollowCamera,CameraBoom))
-		{
-			if(bIsDebug)TLOG_E(TEXT("Not Equip Weapon"));
-		}
+	if(!Weapon->Fire(FollowCamera,CameraBoom))
+	{
+		if(bIsDebug)TLOG_E(TEXT("Not Equip Weapon"));
+	}
 	else
 	{
 		FireSound->SoundPlay3D(GetActorTransform());
@@ -478,9 +496,10 @@ void APlayerCharacter::Hit(int32 Damage)
 	std::string index =TCHAR_TO_UTF8(*FString::FromInt(instance->GetPlayerIndex(NickName)));
 	std::string damage=TCHAR_TO_UTF8(*FString::FromInt(Damage));
 	std::string data=":hit "+index+","+damage;
+
+
 	
-    instance->GetClient()->Send(data);
-	
+   instance->GetClient()->Send(data);
 }
 
 void APlayerCharacter::Run(bool value)
@@ -533,11 +552,13 @@ void APlayerCharacter::OffCameraControl()
 	bIsRDelay=true;
 }
 
-void APlayerCharacter::OnClosedItem( ADropItem* item)
+void APlayerCharacter::OnClosedItem(ADropItem* item)
 {
 	ReadyAction=EAction::PICKUP;
-	PlayerHud->OnActionWidget(item->GetItemName());
 	closedItem=item;
+	if(closedItem!=nullptr)
+	PlayerHud->OnActionWidget(closedItem->GetData()->ItemName);
+	
 }
 
 void APlayerCharacter::OnFarItem()
@@ -547,17 +568,42 @@ void APlayerCharacter::OnFarItem()
 	closedItem=nullptr;
 }
 
+void APlayerCharacter::EquipItem(int32 itemidx)
+{
+	AItemManager* ItemManager=instance->GetItemManager();
+	ADropItem* item=ItemManager->GetItem(itemidx);
+
+	switch (item->GetData()->ItemType)
+	{
+	
+	case EItemType::WEAPON:
+		PickUpWeapon(item->GetData()->ItemID);
+		break;
+	case EItemType::ARMOR:
+		break;
+	case EItemType::ACTVIE:
+		break;
+	}
+
+	ItemManager->DeleteItem(itemidx);
+	
+}
+
 
 void APlayerCharacter::PickUpItem()
 {
 	if(closedItem!=nullptr)
 	{	
-		Weapon->SetIdleGrip();
-		auto item=Cast<ADropWeapon>(closedItem);
-		Weapon->MeshComponent->SetStaticMesh(item->GetMesh());
-		closedItem->Destroy();
-		Weapon->SetbIsEquip(true);
-		PlayerAnim->SetbIsEquip(true);
+		std::string Itemidx =TCHAR_TO_UTF8(*FString::FromInt(instance->GetItemManager()->GetIndex(closedItem)));
+		std::string Playeridx=TCHAR_TO_UTF8(*FString::FromInt(instance->GetPlayerIndex(NickName)));
+		std::string data=":tpick "+Playeridx+","+Itemidx;
+		client->Send(data);
+		closedItem=nullptr;
 	}
 }
 
+inline void APlayerCharacter::PickUpWeapon(int id)
+{
+   Weapon->EquipWeapon(id);
+	PlayerAnim->SetbIsEquip(true);
+}

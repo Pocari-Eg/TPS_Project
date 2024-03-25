@@ -31,6 +31,18 @@ class UWalkState final :public UObject, public IState
 	virtual void Exit(IBaseGameEntity* CurState) override;
 
 };
+UCLASS()
+class URunState final :public UObject, public IState
+{
+	GENERATED_BODY()
+public:
+	static URunState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
+
+};
+
 
 
 

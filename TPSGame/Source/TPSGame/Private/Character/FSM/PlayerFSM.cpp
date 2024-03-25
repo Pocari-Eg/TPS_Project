@@ -107,3 +107,27 @@ void UIdleState::Exit(IBaseGameEntity* CurState)
 {
 }
 #pragma endregion IdleState
+#pragma region RunState
+URunState* URunState::GetInstance()
+{
+	static URunState* Instance;
+	if (Instance == nullptr) {
+		Instance = NewObject<URunState>();
+		Instance->AddToRoot();
+	}
+	return Instance;
+}
+void URunState::Enter(IBaseGameEntity* CurState)
+{
+	CurState->SetStateEnum(State::RUN);
+	
+
+}
+void URunState::Execute(IBaseGameEntity* CurState)
+{
+}
+
+void URunState::Exit(IBaseGameEntity* CurState)
+{
+}
+#pragma endregion RunState

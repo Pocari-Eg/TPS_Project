@@ -61,7 +61,8 @@ public:
 	void SetWalkState();
 	UFUNCTION(BlueprintCallable)
 	void SetIdleState();
-	
+	UFUNCTION(BlueprintCallable)
+	void SetRunState();
 
 	
 	UFUNCTION()

@@ -54,3 +54,22 @@ void FDeletePlayerTask::DoTask(ENamedThreads::Type CurrentThread, const FGraphEv
 	}
 }
 
+
+
+FItemTask::FItemTask(APlayerCharacter* Player, const int32& ItemIndex)
+{
+
+	m_Player=Player;
+	m_ItemIndex=ItemIndex;
+}
+
+void FItemTask::DoTask(ENamedThreads::Type CurrentThread, const FGraphEventRef& MyCompletionGraphEvent)
+{
+
+	// 메인 스레드에서 UI 업데이트 호출
+	if (m_Player.IsValid())
+	{
+		m_Player->EquipItem(m_ItemIndex);
+	}
+}
+

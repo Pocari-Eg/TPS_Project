@@ -12,7 +12,9 @@
  * 
  */
 
-enum MessageType {INVALID,ADD,REP,HIT,EXIT };
+//TINIT = item+INIT 아이템 초기화
+//TPICK = item+PICK
+enum MessageType {INVALID,ADD,REP,TINIT,TPICK,HIT,EXIT };
  class APlayerCharacter;
 class UTPSGameInstance;
 
@@ -82,7 +84,9 @@ void OnConnect(const boost::system::error_code& ec);
 	
 	void AddPlayerList(string list);
 	void DeletePlayer(string data);
-
+	void Initdropitem(string list);
+    void PlayerPickUpItem(string data);
+	
 	//리플리케이션
 	FReplication deserializeReplication(const std::string& data);
 	std::vector<FReplication> deserializeReplicationArray(const std::string& data);
@@ -90,14 +94,13 @@ void OnConnect(const boost::system::error_code& ec);
 	std::string SerializeReplication(const FReplication& rep);
 	
 	void GetReplicationData(string message);
-
 	void PlayerHitUpdate(string message);
+
+	//item
+
+	TArray<int> deserializeItemList(const std::string& str);
 private:
 	string Cutfloat(float value);
 #pragma endregion func
 };
-
-
-
-
 

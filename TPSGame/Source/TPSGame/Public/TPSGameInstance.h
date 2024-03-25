@@ -7,13 +7,20 @@
 #include "Engine/GameInstance.h"
 #include "Network/NetworkBase.h"
 #include "Network/ClientThread.h"
+
+
 #include "TPSGameInstance.generated.h"
 
 /**
  * 
  */
 
+struct FItemData;
+struct FWeaponData;
+class UDataTable;
 class APlayerCharacter;
+class AItemManager;
+
 UCLASS()
 class TPSGAME_API UTPSGameInstance : public UGameInstance
 {
@@ -30,6 +37,15 @@ private:
 	TSubclassOf<APlayerCharacter> PlayerClass;
 	UPROPERTY()
 	APlayerCharacter* Player;
+
+	UPROPERTY()
+	AItemManager* ItemManager;
+
+//DataTable
+	UDataTable* ItemData;
+	UDataTable* WeaponData;
+
+	
 
 public:
 
@@ -59,6 +75,7 @@ public:
 	
 	ClientThread* GetClient(){return Player->GetClientThread();}
 	int32 GetPlayerIndex(FString name);
+	APlayerCharacter* GetPlayer(int32 idx);
 	
 	UFUNCTION()
 	const int32 GetUserCount();
@@ -68,6 +85,14 @@ public:
 	
    UFUNCTION(BlueprintCallable)
 	void OutGame();
+
+	//Datatable
+	FItemData* GetItemData(int32 ItemId);
+	FWeaponData* GetWeaponData(int32 Code);
+
+	void SetItemManager(AItemManager* temp){ItemManager=temp;}
+	AItemManager* GetItemManager(){return ItemManager;}
+	
 private:
 	bool AlreadyInList(FString name);
 };

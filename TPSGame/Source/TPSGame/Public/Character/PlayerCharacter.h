@@ -10,7 +10,6 @@
 #include "Sound/SoundManager.h"
 #include "Item/DropItem.h"
 
-
 #include "PlayerCharacter.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnHpChangedDelegate);
@@ -105,8 +104,8 @@ public:
 	//Aciton
 	UPROPERTY()
 	EAction ReadyAction=EAction::NONE;
-	UPROPERTY()
-	 ADropItem* closedItem;
+
+	 ADropItem* closedItem=nullptr;
 
 	UPROPERTY()
 	bool bIsFire=false;
@@ -180,6 +179,8 @@ private:
 	//action
     UFUNCTION()
 	void PickUpItem();
+	UFUNCTION()
+	void PickUpWeapon(int id);
 	
 public:
 	UFUNCTION()
@@ -222,9 +223,14 @@ public:
 //item
 
 	UFUNCTION()
-	void OnClosedItem( ADropItem* item);
+	void OnClosedItem(ADropItem* item);
 	UFUNCTION()
 	void OnFarItem();
+   UFUNCTION()
+	void EquipItem(int32 itemidx);
+	
+	
+	
 	
 //network
 
@@ -254,5 +260,9 @@ public:
 	//StackBreak
 	SoundManager* FireSound;
 	class UFMODEvent* FireSoundEvent;
-	
+
+	SoundManager* HitSound;
+	class UFMODEvent* HitSoundEvent;
 };
+
+

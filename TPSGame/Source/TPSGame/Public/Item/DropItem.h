@@ -4,6 +4,7 @@
 
 #include "TPSGame.h"
 #include "GameFramework/Actor.h"
+#include "DataTable/ItemTable.h"
 #include "DropItem.generated.h"
 
 UCLASS()
@@ -11,13 +12,16 @@ class TPSGAME_API ADropItem : public AActor
 {
 	GENERATED_BODY()
 #pragma region var
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"),Category="Data")
 	class USphereComponent* SphereComponent;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"),Category="Data")
 	class UStaticMeshComponent* StaticMeshComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FString ItemName;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"),Category="Data")
+	int32 ItemId;
+
+	FItemData* Data;
+
 #pragma  endregion var
 	
 	
@@ -43,6 +47,8 @@ virtual	void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActo
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 
-	FString GetItemName(){return ItemName;}
+	void InitItem(int32 newid);
+	FItemData* GetData(){return Data;}
+
 #pragma endregion func
 };

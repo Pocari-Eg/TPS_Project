@@ -5,7 +5,7 @@
 #include "Character/PlayerCharacter.h"
 #include "Network/NetworkTask.h"
 #include "TPSGameInstance.h"
-
+#include "Item/ItemManager.h"
 
 
 ClientThread::ClientThread()
@@ -248,9 +248,14 @@ void ClientThread::PacketManager(string Message)
 				GetReplicationData(Message);
 			}
 			break;
-
 		case MessageType::HIT:
 			PlayerHitUpdate(Message);
+			break;
+		case TINIT:
+			Initdropitem(Message);
+			break;
+		case TPICK:
+			PlayerPickUpItem(Message);
 			break;
 		case MessageType::EXIT:
 			DeletePlayer(Message);
@@ -291,7 +296,18 @@ MessageType ClientThread::TranslatePacket(string message)
 	{
 		return MessageType::HIT;
 	}
-
+	temp = message.substr(0, sizeof(":tinit ") - 1);
+	if(temp.compare(":tinit ")==0)
+	
+	{
+		return MessageType::TINIT;
+	}
+	temp = message.substr(0, sizeof(":tpick ") - 1);
+	if(temp.compare(":tpick ")==0)
+	
+	{
+		return MessageType::TPICK;
+	}
 	//death
 	temp = message.substr(0, sizeof(":exit ") - 1);
 	if(temp.compare(":exit ")==0)
@@ -313,6 +329,40 @@ void ClientThread::DeletePlayer(string data)
 
 	FString name =temp.c_str();
 	TGraphTask<FDeletePlayerTask>::CreateTask(nullptr).ConstructAndDispatchWhenReady(Player->GetInstance(), name);	
+}
+
+void ClientThread::Initdropitem(string list)
+{
+	string temp = list.substr(sizeof(":tinit ") - 1, list.length());
+	TArray<int>ItemList=deserializeItemList(temp);
+	Player->GetInstance()->GetItemManager()->InitItem(ItemList);
+}
+
+void ClientThread::PlayerPickUpItem(string data)
+{
+	string temp = data.substr(sizeof(":tpick ") - 1, data.length());
+		
+	std::istringstream ss(temp);
+	std::string token;
+
+	int itemidx;
+	int playeridx;
+	// 쉼표로 구분된 각 부분을 추출하고 정수로 변환
+	if (std::getline(ss, token, ','))
+	{
+		playeridx = std::stoi(token);
+	}
+
+	if (std::getline(ss, token, ','))
+	{
+		itemidx = std::stoi(token);
+	}
+
+	TLOG_E(TEXT("Player %d, Item %d "),playeridx,itemidx);
+
+  APlayerCharacter* PickupPlayer=  Player->GetInstance()->GetPlayer(playeridx);
+	TGraphTask<FItemTask>::CreateTask(nullptr).ConstructAndDispatchWhenReady(PickupPlayer, itemidx);	
+	
 }
 
 FReplication ClientThread::deserializeReplication(const std::string& data)
@@ -357,7 +407,16 @@ std::string ClientThread::SerializeReplication(const FReplication& rep)
 
 	return ss.str();
 }
-
+TArray<int> ClientThread::deserializeItemList(const std::string& str)
+{
+	TArray<int> ItemList;
+	std::stringstream ss(str);
+	std::string item;
+	while (std::getline(ss, item, ',')) {
+		ItemList.Push(std::stoi(item));
+	}
+	return ItemList;
+}
 void ClientThread::GetReplicationData(string message)
 {
 
@@ -372,7 +431,7 @@ void ClientThread::GetReplicationData(string message)
 
 void ClientThread::PlayerHitUpdate(string message)
 {
-
+	
 	string temp = message.substr(sizeof(":hit ") - 1, message.length());
 	
 	// 메시지 큐나 델리게이트를 통해 메인 스레드로 메시지 전달

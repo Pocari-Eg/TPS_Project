@@ -12,6 +12,7 @@
 #include "GameFramework/Character.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "TPSGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -69,6 +70,17 @@ void UWeaponComponent::SetIdleGrip()
 void UWeaponComponent::SetWalkGrip()
 {
 	
+}
+
+void UWeaponComponent::EquipWeapon(int32 id)
+{
+	
+	FItemData* ItemData=	Player->GetInstance()->GetItemData(id);
+	MeshComponent->SetStaticMesh(ItemData->StaticMesh);
+
+	
+	SetIdleGrip();
+	SetbIsEquip(true);
 }
 
 bool UWeaponComponent::Fire(class UCameraComponent* Camera,class USpringArmComponent* SpringArm)

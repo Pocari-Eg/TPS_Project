@@ -6,6 +6,18 @@
 #include "ShaderPrintParameters.h"
 #include  "Character/PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "DataTable/ItemTable.h"
+#include "Engine/DataTable.h"
+
+FItemData* UTPSGameInstance::GetItemData(int32 ItemId)
+{
+	return ItemData->FindRow<FItemData>(*FString::FromInt(ItemId), TEXT(""));
+}
+
+FWeaponData* UTPSGameInstance::GetWeaponData(int32 Code)
+{
+	return WeaponData->FindRow<FWeaponData>(*FString::FromInt(Code), TEXT(""));
+}
 
 UTPSGameInstance::UTPSGameInstance()
 {
@@ -15,6 +27,18 @@ UTPSGameInstance::UTPSGameInstance()
 	{
 		PlayerClass=CharacterClass.Class;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> DT_ItemData(TEXT("DataTable'/Game/data/Table/ItemTable.ItemTable'"));
+	if (DT_ItemData.Succeeded())
+	{
+		ItemData = DT_ItemData.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> DT_WeaponData(TEXT("DataTable'/Game/data/Table/WeaponTable.WeaponTable'"));
+	if (DT_WeaponData.Succeeded())
+	{
+		WeaponData = DT_WeaponData.Object;
+	}
 }
 
 void UTPSGameInstance::SpawnPlayer()
@@ -22,8 +46,8 @@ void UTPSGameInstance::SpawnPlayer()
     Player =	GetWorld()->SpawnActor<APlayerCharacter>(PlayerClass,FVector(0.0f,0.0f,75.0f),FRotator::ZeroRotator);
 	Player->SetPlayerCharacter(GetNickName());
 	PlayerList.Add(GetNickName(),Player);
-
 	Player->SetNameEvent();
+	SortPlayerList();
 	GetWorld()->GetFirstPlayerController()->Possess(Player);
 
 }
@@ -129,6 +153,15 @@ int32 UTPSGameInstance::GetPlayerIndex(FString name)
 {
 	int32 i =*PlayerIndex.Find(name);
 	return i;
+}
+
+APlayerCharacter* UTPSGameInstance::GetPlayer(int32 idx)
+{
+     FString name=*PlayerIndex.FindKey(idx);
+
+	return *PlayerList.Find(name);
+	
+	
 }
 
 const int32 UTPSGameInstance::GetUserCount()

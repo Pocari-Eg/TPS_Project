@@ -65,6 +65,9 @@ public:
 	UFUNCTION()
 	void SetWalkGrip();
 
+
+    void EquipWeapon(int32 id);
+	
 	void SetbIsEquip(bool value){bIsEquip=value;}
 	bool GetbIsEquip(){return bIsEquip;}
 

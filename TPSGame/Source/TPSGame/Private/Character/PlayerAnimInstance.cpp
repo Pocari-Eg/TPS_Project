@@ -18,18 +18,24 @@ void UPlayerAnimInstance::PlayFireMonatage()
 void UPlayerAnimInstance::SetWalkState()
 {
 	if(Player!=nullptr)Player->GetFSMInstance()->ChangeState(UWalkState::GetInstance());
+	bIsRun=false;
      bIsWalk=true;
-	Player->GetWeapon()->SetWalkGrip();
-
-	
 }
 	
 
 void UPlayerAnimInstance::SetIdleState()
 {
 	if(Player!=nullptr)Player->GetFSMInstance()->ChangeState(UIdleState::GetInstance());
+	bIsRun=false;
 	bIsWalk=false;
-	Player->GetWeapon()->SetIdleGrip();
+}
+
+void UPlayerAnimInstance::SetRunState()
+{
+	if(Player!=nullptr)Player->GetFSMInstance()->ChangeState(URunState::GetInstance());
+	bIsRun=true;
+	bIsWalk=true;
+
 }
 
 void UPlayerAnimInstance::MoveDirection(float value)

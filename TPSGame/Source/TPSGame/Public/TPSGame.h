@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/ObjectMacros.h"
 DECLARE_LOG_CATEGORY_EXTERN(TPS_LOG, Log, All);
 #define LOG_CALLINFO (FString(__FUNCTION__) + TEXT("(") + FString::FromInt(__LINE__) + TEXT(")"))
 #define LOG_W() UE_LOG(TPS_LOG, Warning, TEXT("%s"), *LOG_CALLINFO) // warning Log 
@@ -20,7 +21,8 @@ DECLARE_LOG_CATEGORY_EXTERN(TPS_LOG, Log, All);
 
 enum State {
 	IDLE = 0,
-	WALK
+	WALK,
+	RUN,
 };
 
 
@@ -35,6 +37,17 @@ struct FHitData {
     int index;
 	int Damage;
 };
+UENUM(BluePrintType)
+enum class  EItemType:uint8
+{
+	//무기
+	WEAPON,
+	//방어구
+	ARMOR,
+	//사용 아이템
+	ACTVIE,
+};
+
 UENUM(BluePrintType)
 enum class  ESoundStyle :uint8
 {

@@ -3,6 +3,7 @@
 
 #include "Item/DropItem.h"
 
+#include "TPSGameInstance.h"
 #include "Character/PlayerCharacter.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
@@ -18,9 +19,12 @@ ADropItem::ADropItem()
 
 	RootComponent=SphereComponent;
 	StaticMeshComponent->SetupAttachment(RootComponent);
-
+    StaticMeshComponent->SetRelativeLocation(FVector::ZeroVector);
 	SphereComponent->SetCollisionProfileName("DropItem");
 	StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+
+	
 }
 
 // Called when the game starts or when spawned
@@ -29,6 +33,7 @@ void ADropItem::BeginPlay()
 	Super::BeginPlay();
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ADropItem::OnBeginOverlap);
 	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &ADropItem::OnEndOverlap);
+	InitItem(101);
 }
 
 void ADropItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -49,6 +54,13 @@ void ADropItem::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 		APlayerCharacter* Player=Cast<APlayerCharacter>(OtherActor);
 		if(Player->bIsPlayer)Player->OnFarItem();
 	}
+}
+
+void ADropItem::InitItem(int newid)
+{
+	ItemId=newid;
+	Data=Cast<UTPSGameInstance>(GetGameInstance())->GetItemData(ItemId);
+	StaticMeshComponent->SetStaticMesh(Data->StaticMesh);
 }
 
 // Called every frame

@@ -35,6 +35,7 @@ void ABullet::HitPlayer(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 	if (Cast<APlayerCharacter>(Hit.GetActor()))
 	{
 		auto HitPlayer = Cast<APlayerCharacter>(Hit.GetActor());
+		TLOG_E(TEXT("HITHIT"))
 		HitPlayer->Hit(Damage);
 	}
 

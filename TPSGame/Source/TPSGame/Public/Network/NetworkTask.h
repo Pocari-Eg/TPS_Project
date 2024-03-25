@@ -96,3 +96,29 @@ private:
 	TWeakObjectPtr<UTPSGameInstance> instacne;
 	FString PlayerName;
 };
+
+class FItemTask: public FNonAbandonableTask
+{
+public:
+	FItemTask(APlayerCharacter* Player, const int32& ItemIndex);
+	void DoTask(ENamedThreads::Type CurrentThread, const FGraphEventRef& MyCompletionGraphEvent);
+	static TStatId GetStatId()
+	{
+		RETURN_QUICK_DECLARE_CYCLE_STAT(FItemTask, STATGROUP_ThreadPoolAsyncTasks);
+	}
+
+	// 수정된 부분
+	ENamedThreads::Type GetDesiredThread()
+	{
+		return ENamedThreads::GameThread;
+	}
+
+	// 수정된 부분
+	static ESubsequentsMode::Type GetSubsequentsMode()
+	{
+		return ESubsequentsMode::TrackSubsequents;
+	}
+private:
+	TWeakObjectPtr<APlayerCharacter> m_Player;
+	int32 m_ItemIndex;
+};
