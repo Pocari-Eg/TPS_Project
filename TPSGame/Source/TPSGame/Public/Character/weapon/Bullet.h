@@ -7,6 +7,7 @@
 #include "Bullet.generated.h"
 
 UCLASS()
+
 class TPSGAME_API ABullet : public AActor
 {
 	GENERATED_BODY()
@@ -20,7 +21,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UProjectileMovementComponent* ProjectileMovement;
 
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UParticleSystem* ObjectHitParticle;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UParticleSystem* PlayerHitParticle;
 	UPROPERTY()
 	int32 Speed;
 
@@ -49,6 +53,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void Shoot();
+
 #pragma  endregion func
 	
 };

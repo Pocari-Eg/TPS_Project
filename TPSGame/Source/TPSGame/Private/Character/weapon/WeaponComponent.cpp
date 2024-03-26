@@ -13,6 +13,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "TPSGameInstance.h"
+
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -129,6 +130,7 @@ bool UWeaponComponent::Fire(class UCameraComponent* Camera,class USpringArmCompo
 	direction.Normalize();
 	auto bullet = GetWorld()->SpawnActor<ABullet>(ffsBullet,ShootPos,ShootRot);
 	bullet->Shoot();
+	
 	Player->ShootEffectEvent();
 	return true;
 }

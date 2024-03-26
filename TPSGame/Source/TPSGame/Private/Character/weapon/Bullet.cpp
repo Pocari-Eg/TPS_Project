@@ -8,6 +8,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Character/PlayerCharacter.h"
+#include "Particles/ParticleSystem.h"
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 ABullet::ABullet()
@@ -20,6 +23,12 @@ ABullet::ABullet()
 	RootComponent=CapsuleComponent;
 	CapsuleComponent->SetCollisionProfileName("Bullet");
 	MeshComponent->SetupAttachment(CapsuleComponent);
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PHITPARTICLE(TEXT("ParticleSystem'/Game/WeaponEffects/P_body_bullet_impact.P_body_bullet_impact'"));
+	if(PHITPARTICLE.Succeeded())PlayerHitParticle=PHITPARTICLE.Object;
+
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> OHITPARTICLE(TEXT("ParticleSystem'/Game/WeaponEffects/P_AssaultRifle_IH.P_AssaultRifle_IH'"));
+	if(OHITPARTICLE.Succeeded())ObjectHitParticle=OHITPARTICLE.Object;
 }
 
 // Called when the game starts or when spawned
@@ -35,10 +44,17 @@ void ABullet::HitPlayer(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 	if (Cast<APlayerCharacter>(Hit.GetActor()))
 	{
 		auto HitPlayer = Cast<APlayerCharacter>(Hit.GetActor());
-		TLOG_E(TEXT("HITHIT"))
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),PlayerHitParticle,Hit.Location,FRotator::ZeroRotator,FVector(2.0f,2.0f,2.0f));
 		HitPlayer->Hit(Damage);
+	
+	}
+	else
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),ObjectHitParticle,Hit.Location);
 	}
 
+
+	
 	Destroy();
 }
 
